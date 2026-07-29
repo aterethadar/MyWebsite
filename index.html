@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <!-- תג אימות בעלות של גוגל -->
+    <meta name="google-site-verification" content="jTzqvaPp_cUZqkFsXpPrM8eDDLJgYjE7hJLBObfqQQk" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="עטרת הדר - נרתיקים איכותיים ללולב ואתרוג. שמירה מושלמת על המצווה שלך עם נרתיקים מעוצבים בקפידה.">
+    <meta name="keywords" content="נרתיק לולב, נרתיק אתרוג, נרתיקים, שמן פראפין, חג הסוכות">
+    <meta name="author" content="עטרת הדר">
+    <title>עטרת הדר | נרתיקים ללולב ואתרו ושמן פראפין</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/build/email.min.js"></script>
+    <style>
+        :root {
+            --gold: #b88b2d;
+            --gold-deep: #8f671b;
+            --gold-soft: #f3e3b3;
+            --cream: #f7f1e7;
+            --cream-deep: #efe3c8;
+            --text: #2f261b;
+            --muted: #6b5b41;
+            --panel: #fffdf8;
+            --border: #e7d9bb;
+            --shadow: rgba(46, 32, 10, 0.1);
+            --dark: #17120d;
+            --dark-soft: #241d15;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Assistant', 'Segoe UI', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background: linear-gradient(180deg, #f8f2e8 0%, #efe4ce 100%);
+            scroll-behavior: smooth;
+        }
+        a { color: inherit; }
+        ::selection { background: rgba(184, 139, 45, 0.24); color: #2f261b; }
+        
+        nav {
+            background: linear-gradient(90deg, var(--dark) 0%, var(--dark-soft) 100%);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gold-soft);
+            margin: 0 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.98em;
+            transition: color 0.2s ease;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        .page {
+            display: none;
+            padding: 56px 8%;
+            min-height: 80vh;
+            text-align: center;
+            background: transparent;
+        }
+        .active { display: block; }
+        
+        h1, h2 {
+            color: #3b2f1f;
+            letter-spacing: 0.2px;
+        }
+        h1 {
+            font-size: clamp(1.8em, 3vw, 2.7em);
+            margin-bottom: 16px;
+        }
+        h2 {
+            font-size: 2em;
+            border-bottom: 2px solid var(--gold);
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 28px;
+        }
+        p, li {
+            line-height: 1.8;
+            font-size: 1.05em;
+            max-width: 820px;
+            margin: 0 auto 16px auto;
+            color: var(--muted);
+        }
+
+        .hero-shell {
+            max-width: 1040px;
+            margin: 0 auto 32px auto;
+            padding: 28px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #fffdf8 0%, #f4ebd8 100%);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 28px var(--shadow);
+        }
+        .hero-subtitle {
+            max-width: 760px;
+            margin: 0 auto 18px auto;
+            font-size: 1.08em;
+            color: var(--muted);
+        }
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .home-showcase {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 24px;
+            align-items: center;
+        }
+        .home-copy {
+            text-align: right;
+        }
+        .home-copy h1 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .home-copy blockquote {
+            margin: 0 0 18px 0;
+            padding: 14px 18px;
+            border-right: 4px solid var(--gold);
+            background: rgba(184, 139, 45, 0.12);
+            border-radius: 12px;
+            color: #4b3b21;
+            font-weight: 700;
+        }
+        .home-copy ul {
+            margin: 0;
+            padding-inline-start: 22px;
+        }
+        .home-copy li {
+            margin: 0 0 10px 0;
+            color: #59462b;
+            font-size: 1.05em;
+            text-align: right;
+        }
+        .home-logo-side {
+            position: relative;
+            min-height: 430px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .home-logo-glow {
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(184, 139, 45, 0.36) 0%, rgba(184, 139, 45, 0) 68%);
+            filter: blur(1px);
+        }
+        .home-logo-fixed {
+            width: 265px;
+            height: 265px;
+            object-fit: contain;
+            border-radius: 28px;
+            border: 1px solid rgba(184, 139, 45, 0.35);
+            box-shadow: 0 16px 38px rgba(46, 32, 10, 0.23);
+            background: #fffdf8;
+            padding: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .home-logo-rotator {
+            position: absolute;
+            bottom: 4px;
+            left: 8px;
+            width: 170px;
+            height: 170px;
+            border-radius: 22px;
+            background: #fffdf8;
+            border: 1px solid rgba(184, 139, 45, 0.32);
+            box-shadow: 0 12px 28px rgba(46, 32, 10, 0.2);
+            overflow: hidden;
+            z-index: 3;
+        }
+        .home-logo-rotator img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 12px;
+            opacity: 0;
+        }
+        .home-logo-rotator img.logo-a {
+            animation: logoSwapA 6s infinite;
+        }
+        .home-logo-rotator img.logo-b {
+            animation: logoSwapB 6s infinite;
+        }
+        @keyframes logoSwapA {
+            0%, 45% { opacity: 1; transform: scale(1); }
+            50%, 100% { opacity: 0; transform: scale(0.96); }
+        }
+        @keyframes logoSwapB {
+            0%, 45% { opacity: 0; transform: scale(0.96); }
+            50%, 95% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.96); }
+        }
+
+        @media (max-width: 900px) {
+            .home-showcase {
+                grid-template-columns: 1fr;
+            }
+            .home-logo-side {
+                order: -1;
+                min-height: 350px;
+            }
+            .home-logo-fixed {
+                width: 230px;
+                height: 230px;
+            }
+            .home-logo-rotator {
+                width: 150px;
+                height: 150px;
+                left: 6px;
+                bottom: 2px;
+            }
+        }
+        .hero-btn {
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--gold);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hero-btn:hover { transform: translateY(-2px); }
+        .hero-btn.primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            box-shadow: 0 6px 16px rgba(184, 139, 45, 0.2);
+        }
+        .hero-btn.secondary {
+            background: transparent;
+            color: #5a4520;
+        }
+
+        .product-search-panel {
+            display: flex;
+            justify-content: center;
+            padding: 18px 5%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(243,227,179,0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 8px 16px rgba(46, 32, 10, 0.06);
+            position: sticky;
+            top: 72px;
+            z-index: 900;
+        }
+        .product-search-panel input {
+            width: min(100%, 600px);
+            max-width: 100%;
+            padding: 16px 18px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 1.05em;
+            background: #fffdf8;
+            color: var(--text);
+            outline: none;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .product-search-panel input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 139, 45, 0.16);
+        }
+        .product-search-note {
+            width: 100%;
+            text-align: center;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.95em;
+        }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .product-card {
+            background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: center;
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(46, 32, 10, 0.12); }
+        .product-image { width: 100%; height: auto; max-height: 240px; object-fit: contain; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); background: #fffdf8; }
+        .btn-add {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+
+        .logo { position: relative; z-index: 1100; height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2)); transition: transform 0.2s ease; cursor: pointer; transform-origin: center center; }
+        .logo:hover { transform: scale(1.4); }
+        .cart-icon { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; color: var(--gold-soft); font-weight: bold; }
+        .cart-count {
+            background: var(--gold);
+            color: #fffdf8;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85em;
+            font-weight: 800;
+        }
+        .cart-page { max-width: 800px; margin: 0 auto; text-align: center; }
+        .cart-item {
+            background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px var(--shadow);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+        .cart-item img { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border); }
+        .cart-item-details { flex: 1; text-align: right; }
+        .cart-item-details p { margin: 4px 0; color: var(--muted); }
+        .cart-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .cart-empty { font-size: 1.1em; color: var(--muted); margin: 20px 0; }
+        .add-cart-message { font-size: 1em; color: var(--muted); margin-top: 15px; }
+        .popup-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+        .popup-buttons .btn-send { width: auto; padding: 12px 25px; }
+
+        .about-logo { max-width: 220px; margin: 0 auto 25px auto; display: block; border-radius: 16px; }
+
+        .testimonial-card {
+            background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
+            padding: 20px;
+            border-radius: 14px;
+            border-right: 5px solid var(--gold);
+            box-shadow: 0 6px 18px var(--shadow);
+            text-align: right;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+        .testimonial-photo { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid var(--gold); }
+        .testimonial-content { text-align: right; flex: 1; color: var(--muted); }
+        .testimonial-stars { margin: 10px 0; display: inline-flex; gap: 3px; justify-content: flex-end; }
+        .testimonial-stars span { color: #c5b28c; font-size: 1.2em; }
+        .testimonial-stars span.filled { color: var(--gold); }
+        .testimonial-empty {
+            max-width: 620px;
+            margin: 10px auto 24px auto;
+            padding: 16px;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            color: #7a6844;
+            background: rgba(255, 253, 248, 0.75);
+        }
+        .testimonial-image-label {
+            display: block;
+            margin: 14px 0 6px;
+            color: #5a4520;
+            font-weight: 700;
+        }
+        .testimonial-image-note {
+            margin: 6px 0 2px;
+            color: #7a6844;
+            font-size: 0.92em;
+        }
+        .rating-field { text-align: right; margin: 15px 0 5px; }
+        .rating-field label { display: block; margin-bottom: 8px; font-weight: bold; color: #5a4520; }
+        .rating-field select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1em; background: #fffdf8; color: var(--text); }
+        
+        form {
+            max-width: 620px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px var(--shadow);
+            text-align: right;
+            border: 1px solid var(--border);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            background: #fffdf8;
+            color: var(--text);
+        }
+        .btn-send {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: 800;
+            border-radius: 8px;
+        }
+
+        footer { background: linear-gradient(90deg, var(--dark) 0%, var(--dark-soft) 100%); color: var(--gold-soft); padding: 30px; margin-top: 50px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); }
+        .footer-contact { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 8px; font-size: 0.95em; }
+        .footer-contact-item a { color: var(--gold); text-decoration: none; }
+        .footer-contact-item a:hover { text-decoration: underline; }
+        .footer-contact-item span { font-size: 1.3em; }
+
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(46, 32, 10, 0.95);
+            color: #fffdf8;
+            padding: 12px 18px;
+            border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            font-weight: 700;
+            display: none;
+            z-index: 4000;
+            max-width: min(92%, 380px);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .promo-popup-title {
+            font-size: 1.8em;
+            color: #33270f;
+            margin-bottom: 18px;
+            line-height: 1.1;
+        }
+        .promo-popup-content {
+            text-align: right;
+            color: #4f432f;
+            font-size: 1.05em;
+            line-height: 1.75;
+        }
+        .promo-popup-content strong {
+            color: #2f261b;
+        }
+        .promo-popup-content ul {
+            text-align: right;
+            margin: 16px 0;
+            padding-inline-start: 20px;
+        }
+        .promo-popup-content li {
+            margin-bottom: 10px;
+        }
+        .promo-popup-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .promo-popup-button {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .promo-popup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 32, 10, 0.18);
+        }
+
+        .first-order-popup-content {
+            width: min(92vw, 520px);
+            padding: 34px 30px;
+            text-align: right;
+            overflow: hidden;
+        }
+        .first-order-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            background: rgba(184, 139, 45, 0.16);
+            color: #5f481d;
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .first-order-title {
+            margin: 0 0 12px 0;
+            color: #2f261b;
+            font-size: clamp(1.5em, 3.2vw, 2em);
+            line-height: 1.2;
+        }
+        .first-order-text {
+            margin: 0;
+            color: #5d4e37;
+            font-size: 1.03em;
+            line-height: 1.75;
+        }
+        .first-order-actions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+        .first-order-google {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            border: 0;
+            border-radius: 999px;
+            padding: 12px 20px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .first-order-later {
+            background: #fff7e4;
+            color: #6a5527;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .first-order-note {
+            margin-top: 12px;
+            color: #7a6844;
+            font-size: 0.92em;
+        }
+
+        .paraffin-offer-overlay {
+            z-index: 2200;
+        }
+        .paraffin-offer-popup {
+            width: min(92vw, 560px);
+            text-align: right;
+            overflow: hidden;
+            position: relative;
+            padding: 52px 34px 30px 34px;
+            background: linear-gradient(135deg, #fffdf8 0%, #f6ead1 100%);
+        }
+        .paraffin-offer-popup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 12px;
+            background: linear-gradient(90deg, #8f671b 0%, #d4ad3b 48%, #8f671b 100%);
+        }
+        .paraffin-offer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            background: rgba(184, 139, 45, 0.16);
+            color: #5f481d;
+            font-size: 0.9em;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .paraffin-offer-title {
+            margin: 0 0 10px 0;
+            color: #2f261b;
+            font-size: clamp(1.55em, 3.2vw, 2.15em);
+            line-height: 1.15;
+        }
+        .paraffin-offer-subtitle {
+            margin: 0 0 16px 0;
+            color: #7a6844;
+            font-size: 1.02em;
+        }
+        .paraffin-offer-price-strip {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            margin: 18px 0 14px 0;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(90deg, rgba(184, 139, 45, 0.12) 0%, rgba(212, 173, 59, 0.22) 100%);
+            border: 1px solid rgba(143, 103, 27, 0.18);
+        }
+        .paraffin-offer-old-price {
+            color: #8e7a54;
+            text-decoration: line-through;
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+        .paraffin-offer-arrow {
+            color: #8f671b;
+            font-size: 1.2em;
+            font-weight: 800;
+        }
+        .paraffin-offer-new-price {
+            color: #5a4520;
+            font-size: 1.6em;
+            font-weight: 900;
+        }
+        .paraffin-offer-text {
+            margin: 0;
+            color: #4f432f;
+            line-height: 1.8;
+            font-size: 1.03em;
+        }
+        .paraffin-offer-actions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+        .paraffin-offer-button {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color: #fffdf8;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 999px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .paraffin-offer-button.secondary {
+            background: transparent;
+            color: #5a4520;
+            border: 1px solid var(--gold);
+            font-weight: 700;
+        }
+        .paraffin-offer-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 32, 10, 0.18);
+        }
+        .paraffin-offer-footnote {
+            margin: 16px 0 0 0;
+            color: #7a6844;
+            font-size: 0.86em;
+            font-weight: 700;
+            letter-spacing: 0.1px;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.72);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 18px 12px;
+            overflow-y: auto;
+            z-index: 2000;
+        }
+        .popup-content {
+            background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            width: min(92vw, 420px);
+            max-height: calc(100vh - 36px);
+            overflow-y: auto;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+            color: var(--muted);
+        }
+        .close-popup {
+            position: sticky;
+            top: 8px;
+            font-size: 1.7em;
+            font-weight: 700;
+            cursor: pointer;
+            color: #5a4520;
+            line-height: 1;
+            z-index: 6;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            background: rgba(255, 247, 228, 0.95);
+            border-radius: 999px;
+            padding: 2px 8px;
+        }
+        .product-options-popup { max-width: 480px; text-align: right; }
+        .product-options-form { max-width: 100%; background: transparent; box-shadow: none; padding: 0; margin: 15px 0 0 0; text-align: right; }
+        .product-options-form label { display: block; margin-top: 12px; font-weight: bold; color: #5a4520; }
+        .product-options-form select, .product-options-form textarea { margin-top: 6px; }
+        .nav-auth-wrap { display: flex; align-items: center; gap: 12px; }
+        .auth-button {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .auth-button:hover { background: rgba(184, 139, 45, 0.14); }
+        .google-signin-button { display: flex; align-items: center; justify-content: center; min-width: 180px; }
+        .auth-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            background: rgba(0, 0, 0, 0.65);
+        }
+        .auth-modal-content {
+            width: min(92%, 460px);
+            background: linear-gradient(135deg, #fffdf8 0%, #f4ebd8 100%);
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .auth-modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: #3b2f1f;
+        }
+        .auth-modal-content p {
+            margin-bottom: 24px;
+            color: var(--muted);
+        }
+        .guest-button {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+        .guest-button:hover { background: rgba(184, 139, 45, 0.12); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-links">
+        <a onclick="showPage('home')">בית</a>
+        <a onclick="showPage('about')">אודות</a>
+        <a onclick="showPage('shop')">חנות</a>
+        <a onclick="showPage('create-product')">יצירת מוצר</a>
+        <a onclick="showPage('testimonials')">המלצות</a>
+        <a onclick="showPage('contact')">צור קשר</a>
+    </div>
+    <div class="nav-auth-wrap" style="color: var(--gold); font-weight: bold; font-size: 1.1em;">
+        <button id="navSignInButton" class="auth-button" onclick="openAuthModal()">להתחברות לאתר</button>
+        <button id="signOutButton" class="auth-button" style="display:none;" onclick="logoutUser()">התנתק</button>
+        <span id="userLabel" style="display:none; white-space: nowrap;"></span>
+        <div class="cart-icon" onclick="showPage('cart')" title="עגלה">
+            <span>🛒</span>
+            <span id="cartCount" class="cart-count">0</span>
+        </div>
+        <img src="לוגו כללי.png" alt="לוגו עטרת הדר כללי" class="logo">
+        <span>עטרת הדר</span>
+    </div>
+</nav>
+
+<div id="authModal" class="auth-modal" onclick="if(event.target===this) closeAuthModal()">
+    <div class="auth-modal-content">
+        <span class="close-popup" onclick="closeAuthModal()">&times;</span>
+        <h2>התחברות ל גוגל וגם התחברות בדואל</h2>
+        <div id="googleSignInButton" class="google-signin-button" style="margin-top:16px;"></div>
+        <form id="manualAuthForm" onsubmit="handleManualLogin(event)" style="margin-top:16px; width:100%;">
+            <input type="text" id="manualAuthName" placeholder="שם מלא" required style="width:100%; margin-bottom:8px; padding:10px; border:1px solid #d8c18a; border-radius:8px;">
+            <input type="email" id="manualAuthEmail" placeholder="אימייל" required style="width:100%; margin-bottom:8px; padding:10px; border:1px solid #d8c18a; border-radius:8px;">
+            <button type="submit" class="guest-button" style="margin-top:4px;">התחברות בדואל</button>
+        </form>
+    </div>
+</div>
+
+<div id="promoPopup" class="popup-overlay" onclick="if(event.target===this) closePromoPopup()">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closePromoPopup()">&times;</span>
+        <div class="promo-popup-content">
+            <h2 class="promo-popup-title">🚀 חולמים להפוך רעיון למוצר מצליח? זה הזמן לייצר ישירות בסין!</h2>
+            <p>בין אם יש לכם עסק קיים שרוצה להתרחב, רעיון למוצר חדשני שיושב לכם בראש כבר שנה, או שאתם רוצים לבנות מותג פרטי (<strong>Private Label</strong>) מאפס — <strong>ייצור ישירות מסין הוא המפתח שלכם לרווחיות, איכות וגדילה מהירה.</strong></p>
+            <p>עולם הייצור הסיני כבר מזמן לא עוסק רק ב"מוצרי מדף זולים". מדובר כיום במעצמת טכנולוגיה, חדשנות וייצור בהתאמה אישית מלאה (<strong>Custom Manufacturing</strong>), המאפשרת לכם לקחת כל רעיון ולהפוך אותו למוצר מוגמר ברמה הגבוהה ביותר.</p>
+
+            <h3>💡 למה דווקא לייצר בסין בהתאמה אישית?</h3>
+            <ul>
+                <li><strong>חיסכון משמעותי בעלויות:</strong> ייצור ישיר מול המפעל חוסך את פערי התיווך ומגדיל את שולי הרווח של העסק שלכם.</li>
+                <li><strong>התאמה מלאה (Customization):</strong> עיצוב, מיתוג, אריזה, חומרים ומידות — הכל מתוכנן בדיוק לפי הדרישות והחזון שלכם.</li>
+                <li><strong>גמישות ויכולת גדילה:</strong> אפשרות להתחיל בסדרות ייצור קטנות ולהגדיל את ההיקפים ככל שהעסק צומח.</li>
+                <li><strong>איכות ללא פשרות:</strong> עבודה מול מפעלים מורשים עם בקרת איכות קפדנית מבטיחה מוצר שאתם והלקוחות שלכם תהיו גאים בו.</li>
+            </ul>
+
+            <h3>🛠️ איך התהליך עובד? מקורס לתהליך פשוט ב-4 צעדים:</h3>
+            <ul>
+                <li><strong>אפיון ותכנון המוצר:</strong> מגדירים את הצרכים, השרטוטים, המפרט הטכני והמיתוג.</li>
+                <li><strong>איתור מפעלים וסינון:</strong> מוצאים את הספקים האמינים והמתאימים ביותר לסוג המוצר שלכם.</li>
+                <li><strong>ייצור דוגמה (Sample):</strong> מקבלים דוגמה פיזית של המוצר לבדיקה, שיפורים ואישור סופי לפני הייצור ההמוני.</li>
+                <li><strong>ייצור, בקרת איכות ושילוח:</strong> מפקחים על תהליך הייצור, מבצעים בדיקות איכות קפדניות ומדאגים שהסחורה תגיע אליכם בצורה בטוחה וישירה.</li>
+            </ul>
+
+            <h3>🎯 למי זה מתאים?</h3>
+            <ul>
+                <li><strong>בעלי עסקים וחברות</strong> שרוצים להוזיל עלויות ייצור ולהגדיל רווחיות.</li>
+                <li><strong>יזמים וסטארט-אפיסטים</strong> עם רעיון לפיתוח מוצר חדש.</li>
+                <li><strong>מוכרים באמזון / איביי / שופייפיי</strong> שרוצים לבנות מותג פרטי מנצח.</li>
+                <li><strong>לכל מי שרוצה לקחת את העסק שלו שלב אחד קדימה!</strong></li>
+            </ul>
+
+            <p><strong>📞 מוכנים להפוך את החזון למציאות?</strong><br>אל תיתנו לרעיון שלכם להישאר על הנייר. צרפו אלינו עוד היום, ונתחיל לבנות את המוצר הבא שלכם ישירות מהמפעלים המובילים בסין!</p>
+            <div class="promo-popup-actions">
+                <button type="button" class="promo-popup-button" onclick="closePromoPopup(); showPage('create-product');">👉 לחצו כאן לקבלת ייעוץ ראשוני ולפרטים נוספים</button>
+                <button type="button" class="promo-popup-button" onclick="closePromoPopup()">סגור</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="firstOrderDiscountPopup" class="popup-overlay" onclick="if(event.target===this) closeFirstOrderDiscountPopup()">
+    <div class="popup-content first-order-popup-content">
+        <span class="close-popup" onclick="closeFirstOrderDiscountPopup()">&times;</span>
+        <div class="first-order-badge">🎁 הטבת פתיחה</div>
+        <h2 class="first-order-title">10% הנחה לקנייה הראשונה</h2>
+        <p class="first-order-text">התחברו עם Google וקבלו את ההטבה מיד בקופה. קצר, פשוט, וחוסך לכם כבר בהזמנה הראשונה.</p>
+        <div class="first-order-actions">
+            <button type="button" class="first-order-google" onclick="openDiscountLoginPopup(); closeFirstOrderDiscountPopup();">להתחברות עם Google</button>
+            <button type="button" class="first-order-later" onclick="closeFirstOrderDiscountPopup()">אולי אחר כך</button>
+        </div>
+        <p class="first-order-note">ההטבה נשמרת למשתמש מזוהה ומוגבלת לפעם אחת.</p>
+    </div>
+</div>
+
+<div id="paraffinOfferPopup" class="popup-overlay paraffin-offer-overlay" onclick="if(event.target===this) closeParaffinOfferPopup()">
+    <div class="popup-content paraffin-offer-popup">
+        <span class="close-popup" onclick="closeParaffinOfferPopup()">&times;</span>
+        <div class="paraffin-offer-badge">🔥 מבצע מוגבל בזמן</div>
+        <h2 class="paraffin-offer-title">12 בקבוקי פראפין ב־₪310 בלבד</h2>
+        <p class="paraffin-offer-subtitle">במקום ₪348 - חיסכון אמיתי על מלאי איכותי</p>
+        <div class="paraffin-offer-price-strip">
+            <span class="paraffin-offer-old-price">₪348</span>
+            <span class="paraffin-offer-arrow">→</span>
+            <span class="paraffin-offer-new-price">₪310</span>
+        </div>
+        <p class="paraffin-offer-text">הזדמנות מעולה להצטייד מראש ב־12 בקבוקי פראפין במחיר מיוחד, עם מלאי איכותי שמתאים לשימוש נוח ומשתלם.</p>
+        <div class="paraffin-offer-actions">
+            <button type="button" class="paraffin-offer-button" onclick="closeParaffinOfferPopup(); showPage('shop'); openProductOptions('שמן פראפין איכותי', 29, 'שמן פראפין ח.png');">למוצר השמן פראפין</button>
+            <button type="button" class="paraffin-offer-button secondary" onclick="closeParaffinOfferPopup()">סגור</button>
+        </div>
+        <p class="paraffin-offer-footnote">אין כפל מבצעים | עד גמר המלאי</p>
+    </div>
+</div>
+
+<div id="home" class="page active">
+    <div class="hero-shell">
+        <div class="home-showcase">
+            <div class="home-logo-side" aria-label="לוגו עטרת הדר והחלפת לוגואים">
+                <div class="home-logo-glow"></div>
+                <img src="לוגו כללי.png" alt="לוגו עטרת הדר כללי" class="home-logo-fixed">
+                <div class="home-logo-rotator" aria-hidden="true">
+                    <img src="לוגו לולב.png" alt="לוגו לולב" class="logo-a">
+                    <img src="לוגו פראפין.png" alt="לוגו פראפין" class="logo-b">
+                </div>
+            </div>
+            <div class="home-copy">
+                <h1>עטרת הדר – פאר הקודש והאמנות</h1>
+                <blockquote>"זה קלי ואנוהו – יופי, הדר ואיכות ללא פשרות"</blockquote>
+                <p>ב"עטרת הדר" אנו מביאים אליכם את המוצרים המהודרים ביותר, תוך הקפדה יתרה על איכות החומרים, גמור מושלם והלכה פסוקה.</p>
+                <ul>
+                    <li><strong>איכות ללא פשרות:</strong> ייצור והקפדה ברמה הגבוהה ביותר.</li>
+                    <li><strong>שירות אישי ומסור:</strong> מלווים אתכם בבחירת המוצר המדויק עבורכם.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <h2>אודותינו</h2>
+    <img src="לוגו כללי.png" alt="לוגו עטרת הדר כללי" class="about-logo">
+    <h3>זה אלי ואנוהו – פאר, מסורת ואיכות ללא פשרות</h3>
+    <p>ב"עטרת הדר" אנו מאמינים כי מצווה מהודרת ומכובדת אינה רק הידור הלכתי, אלא ביטוי עמוק של קשר, אהבה וכבוד למסורת ישראל. מתוך חזון זה הקמנו את המרכז לתשמישי קדושה ויודאיקה, במטרה להנגיש לציבור מוצרי קודש ואמנות יהודית ברמה הגבוהה ביותר.</p>
+
+    <h3>החזון והדרך שלנו</h3>
+    <p>השם <strong>"עטרת הדר"</strong> מסמל את השילוב המנחה אותנו בכל עשייתנו:</p>
+    <ul>
+        <li><strong>עטרת:</strong> שמירה על כבודה של המסורת והקפדה הלכתית יתרה ללא פשרות.</li>
+        <li><strong>הדר:</strong> הידור מצווה, יופי אסתטי, גימור מושלם והשקעה בכל פרט ופרט.</li>
+    </ul>
+    <p>אנו פועלים מתוך תחושת שליחות עמוקה, ומלווים כל לקוח - החל מהכנות לבר מצווה, דרך קניית תשמישי קדושה לבית ולבית הכנסת, ועד לבחירת מתנות מושקעות לאירועים מרגשים - תוך מתן יחס אישי, שירות קשוב וייעוץ מקצועי.</p>
+
+    <h3>מה מייחד את "עטרת הדר"?</h3>
+    <ul>
+        <li><strong>הקפדה הלכתית ואמינות:</strong> כל מוצרי הקודש אצלנו עוברים בדיקה קפדנית ועומדים בדרישות ההלכה המחמירות ביותר, בפיקוח ובאחריות מלאה.</li>
+        <li><strong>איכות וחומרים מעולים:</strong> אנו עובדים עם היצרנים, הסופרים והאמנים המובילים בתחום, תוך שימוש בחומרים העמידים והאיכותיים ביותר.</li>
+        <li><strong>שילוב בין מסורת לחדשנות:</strong> לצד עיצובים קלאסיים ומסורתיים, אנו מציעים דגמים מודרניים המתאימים לבית היהודי בן ימינו.</li>
+        <li><strong>חוויית קנייה ושירות:</strong> אנו רואים בלקוחותינו שותפים לדרך, ומחויבים לליווי אישי, זמינות ומענה מדויק לכל צורך.</li>
+    </ul>
+
+    <p><em>"אשרי העם שככה לו - אנו גאים להיות חלק מהידור המצוות שלכם ומהבאת אור וקדושה לביתכם."</em></p>
+    <p><strong>נשמח לעמוד לשירותכם וללוות אתכם בבחירת מוצרי הקודש המדויקים עבורכם.</strong></p>
+</div>
+
+<div id="shop" class="page">
+    <div class="product-search-panel">
+        <input id="productSearchInput" type="search" placeholder="חפש מוצר לפי שם או תיאור..." aria-label="חיפוש מוצר" oninput="filterProducts()">
+    </div>
+    <h2>החנות שלנו</h2>
+    <div class="product-search-note">הקלידו שמה של חבילה או מוצר כדי למצוא במהירות תוצאה רלוונטית.</div>
+    <div class="products-grid">
+        <div class="product-card">
+            <img src="דמוי עור על במה.png" alt="סט נרתיקים דמוי עור מתקפל" class="product-image">
+            <h3>סט נרתיקים דמוי עור מתקפל</h3>
+            <p>₪110</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('סט נרתיקים דמוי עור מתקפל', 110, 'דמוי עור על במה.png')">הוסף לסל</button>
+        </div>
+        <div class="product-card">
+            <img src="לוגו לולב.png" alt="לוגו לולב" class="product-image">
+            <h3>נרתיק לולב ואקום / רגיל</h3>
+            <p>ארוך ₪15 • קצר ₪10 • ואקום ₪20</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('נרתיק לולב ואקום / רגיל', 10, 'לוגו לולב.png')">הוסף לסל</button>
+        </div>
+        <div class="product-card" data-category="אקססוריז">
+            <img src="זכוכית מגדלת.png" alt="זכוכית מגדלת" class="product-image">
+            <h3>זכוכית מגדלת</h3>
+            <p>₪20</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('זכוכית מגדלת', 20, 'זכוכית מגדלת.png')">הוסף לסל</button>
+        </div>
+        <div class="product-card">
+            <img src="שמן פראפין ח.png" alt="שמן פראפין איכותי" class="product-image">
+            <h3>שמן פראפין איכותי</h3>
+            <p>₪29</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('שמן פראפין איכותי', 29, 'שמן פראפין ח.png')">הוסף לסל</button>
+        </div>
+        <div class="product-card">
+            <img src="כוסיו שמן פראפין גדול בינוני קטן.png" alt="כוסיות שמן פראפין" class="product-image">
+            <h3>כוסיות שמן פראפין</h3>
+            <p>גדול ₪40 • בינוני ₪30 • קטן ₪20</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('כוסיות שמן פראפין', 20, 'כוסיו שמן פראפין גדול בינוני קטן.png')">הוסף לסל</button>
+        </div>
+        <div class="product-card" data-category="אקססוריז">
+            <img src="קשית.png" alt="קשית" class="product-image">
+            <h3>קשית</h3>
+            <p>קשית ₪3 • פתילה ₪10</p>
+            <button class="btn-add" type="button" onclick="openProductOptions('קשית', 3, 'קשית.png')">הוסף לסל</button>
+        </div>
+    </div>
+</div>
+
+<div id="create-product" class="page">
+    <h2>יצירת מוצר חדש</h2>
+    <p>השאירו לנו את הפרטים וניצור עבורכם מוצר מותאם לפי בקשה. ניתן לצרף תמונה להמחשה, זה לא חובה.</p>
+    <form id="createProductForm" action="https://formsubmit.co/aterethadar@gmail.com" method="POST" onsubmit="return sendCreateProductForm(event)">
+        <input type="hidden" name="_subject" value="בקשת יצירת מוצר - עטרת הדר">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" id="createProductNextInput" value="">
+        <input type="text" id="creatorName" name="שם" placeholder="שם מלא" required>
+        <input type="email" id="creatorEmail" name="אימייל" placeholder="אימייל" required>
+        <input type="tel" id="creatorPhone" name="טלפון" placeholder="טלפון" required>
+        <input type="text" id="creatorProduct" name="המוצר" placeholder="איזה מוצר תרצה שניצור עבורך?" required>
+        <label for="productImage" style="display:block; text-align:right; margin:18px 0 10px; color:#5a4520; font-weight:700;">תמונה להמחשה (אופציונלי)</label>
+        <input type="file" id="productImage" name="תמונת המחשה" accept="image/*" onchange="previewProductImage(event)">
+        <div id="imagePreviewContainer" class="image-preview-container" style="display:none;">
+            <p>תצוגה מקדימה:</p>
+            <img id="productImagePreview" class="image-preview" src="" alt="תצוגת תמונת המוצר">
+        </div>
+        <button type="submit" class="btn-send">שלח בקשה</button>
+        <p id="createProductSuccessMessage" style="display:none; margin-top:16px; color:#2e7d32; font-weight:bold;">הבקשה נשלחה בהצלחה! נחזור אליך בהקדם.</p>
+    </form>
+</div>
+
+<div id="cart" class="page">
+    <h2>עגלת הקניות</h2>
+    <div id="cartItems" class="cart-page"></div>
+    <p id="cartTotal"></p>
+    <div class="cart-actions">
+        <button type="button" class="btn-send" onclick="showPage('shop')">המשך לקנות</button>
+        <button type="button" class="btn-send" onclick="checkoutOrder()">שלח הזמנה</button>
+    </div>
+</div>
+
+<div id="productOptionsPopup" class="popup-overlay">
+    <div class="popup-content product-options-popup">
+        <span class="close-popup" onclick="closeProductOptionsPopup()">&times;</span>
+        <h2 id="productOptionsTitle">הוסף מוצר</h2>
+        <p id="productOptionsPrice"></p>
+        <form id="productOptionsForm" class="product-options-form" onsubmit="submitProductOptions(event)">
+            <label id="sizeLabel" for="productSize" style="display:none;">בחר גודל</label>
+            <select id="productSize" style="display:none;">
+                <option value="">לא נבחר</option>
+                <option value="קטן">קטן</option>
+                <option value="בינוני">בינוני</option>
+                <option value="גדול">גדול</option>
+            </select>
+            <label id="colorLabel" for="productColor" style="display:none;">בחר צבע</label>
+            <select id="productColor" style="display:none;">
+                <option value="">בחר צבע</option>
+                <option value="זהב">זהב</option>
+                <option value="כסף">כסף</option>
+                <option value="שקוף">שקוף</option>
+                <option value="כחול">כחול</option>
+                <option value="אדום סגול">אדום סגול</option>
+                <option value="תורכיז ירוק">תורכיז ירוק</option>
+                <option value="צהוב">צהוב</option>
+            </select>
+            <label id="variantLabel" for="productVariant" style="display:none;">בחר סוג</label>
+            <select id="productVariant" style="display:none;">
+                <option value="">בחר סוג</option>
+                <option value="קשית">קשית — ₪3</option>
+                <option value="פתילה">פתילה — ₪10</option>
+            </select>
+            <label id="coverVariantLabel" for="productCoverVariant" style="display:none;">בחר סוג נרתיק</label>
+            <select id="productCoverVariant" style="display:none;">
+                <option value="">בחר סוג</option>
+                <option value="ואקום">ואקום — ₪20</option>
+                <option value="ארוך">ארוך — ₪15</option>
+                <option value="קצר">קצר — ₪10</option>
+            </select>
+            <button type="submit" class="btn-send" style="margin-top: 16px;">הוסף לעגלה</button>
+        </form>
+    </div>
+</div>
+
+<div id="cartAddPopup" class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closeAddCartPopup()">&times;</span>
+        <h2>המוצר נוסף לעגלה!</h2>
+        <p id="popupMessage" class="add-cart-message"></p>
+        <div class="popup-buttons">
+            <button type="button" class="btn-send" onclick="closeAddCartPopup(); showPage('shop')">המשך לקנות</button>
+            <button type="button" class="btn-send" onclick="closeAddCartPopup(); checkoutOrder()">שלח הזמנה</button>
+        </div>
+    </div>
+</div>
+
+<div id="testimonials" class="page">
+    <h2>מה הלקוחות אומרים</h2>
+    <p id="testimonialsEmptyState" class="testimonial-empty">עדיין אין המלצות באתר. נשמח שתהיו הראשונים לשתף חוויה.</p>
+    <div id="testimonials-list"></div>
+    <hr style="margin: 40px 0; border: 0; border-top: 1px solid var(--gold);">
+    <h3>הוסיפו המלצה</h3>
+    <form id="testimonialForm">
+        <input type="text" id="testName" placeholder="שמך" required>
+        <textarea id="testContent" rows="4" placeholder="כתוב את ההמלצה שלך כאן..." required></textarea>
+        <div class="rating-field">
+            <label for="testRating">בחר דירוג בכוכבים:</label>
+            <select id="testRating" required>
+                <option value="">בחר דירוג</option>
+                <option value="5">★★★★★</option>
+                <option value="4">★★★★☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="1">★☆☆☆☆</option>
+            </select>
+        </div>
+        <label for="testImage" class="testimonial-image-label">תמונה להמלצה (אופציונלי)</label>
+        <input type="file" id="testImage" accept="image/*">
+        <p class="testimonial-image-note">ניתן לצרף תמונה אחת. אם לא תצורף תמונה, ההמלצה תפורסם בלי תמונת לקוח.</p>
+        <button type="button" class="btn-send" onclick="addTestimonial()">פרסם המלצה</button>
+    </form>
+</div>
+
+<div id="contact" class="page">
+    <h2>צור קשר</h2>
+    <p>נשמח לעמוד לשירותכם לכל שאלה או הזמנה מיוחדת.</p>
+    <form id="contactForm" method="POST" action="https://formsubmit.co/aterethadar@gmail.com" onsubmit="return sendContactForm(event)">
+        <input type="hidden" name="_subject" value="הודעת צור קשר מאתר עטרת הדר">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" id="contactNextInput" value="">
+        <input type="text" id="contactName" name="name" placeholder="שם מלא" required>
+        <input type="email" id="contactEmail" name="email" placeholder="אימייל" required>
+        <input type="tel" id="contactPhone" name="phone" placeholder="מספר טלפון" required>
+        <textarea id="contactMessage" name="message" rows="5" placeholder="כתוב כאן את ההודעה או הבקשה שלך" required></textarea>
+        <button type="submit" class="btn-send">שלח הודעה</button>
+        <p id="contactSuccessMessage" style="display:none; margin-top:12px; color:#2e7d32; font-weight:bold;">ההודעה נשלחה בהצלחה! תודה שפניתם אלינו.</p>
+    </form>
+</div>
+
+<footer>
+    <div class="footer-contact">
+        <div class="footer-contact-item">
+            <span>📞</span>
+            <a href="#" onclick="copyContact('0533116998', 'המספר הועתק ללוח מחכים לעמוד לשירותכם'); return false;" title="העתק מספר טלפון">0533116998</a>
+        </div>
+        <div class="footer-contact-item">
+            <span>✉️</span>
+            <a href="#" onclick="copyContact('aterethadar@gmail.com', 'האימייל הועתק ללוח מחכים לעמוד לשירותכם'); return false;" title="העתק אימייל">aterethadar@gmail.com</a>
+        </div>
+        <div class="footer-contact-item">
+            <span>📍</span>
+            <a href="https://maps.google.com/?q=מודיעין+עילית+ישראל" target="_blank">מודיעין עילית ישראל</a>
+        </div>
+    </div>
+    <p>עטרת הדר - כל הזכויות שמורות © 2026</p>
+</footer>
+
+<div id="toastMessage" class="toast-message" aria-live="polite"></div>
+
+<script>
+    const AUTH_STORAGE_KEY = 'etrat_hadar_current_user';
+    // הכנס כאן את Google Client ID של האפליקציה שלך.
+    // ניתן להפיק מזהה לקוח דרך: https://console.cloud.google.com/apis/credentials
+    // לאחר שמקבלים את המזהה, החליפו את הטקסט 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID'.
+    const GOOGLE_CLIENT_ID = '1020296694692-1ascb6mkoa3fuued0k3jvs1k0vaaiqhu.apps.googleusercontent.com';
+    const CART_STORAGE_KEY = 'etrat_hadar_cart';
+    const OWNER_PERSONAL_EMAIL = 'c0533116998@gmail.com';
+    const BUSINESS_EMAIL = 'aterethadar@gmail.com';
+    const DISCOUNT_POPUP_STORAGE_KEY = 'etrat_hadar_discount_popup_seen';
+    const TESTIMONIALS_STORAGE_KEY = 'etrat_hadar_testimonials';
+    const PARAFFIN_OFFER_POPUP_STORAGE_KEY = 'etrat_hadar_paraffin_offer_seen';
+    const FIRST_ORDER_DISCOUNT_RATE = 0.1;
+    const DISCOUNT_POPUP_DELAY_MS = 25000;
+    const PARAFFIN_OFFER_POPUP_DELAY_MS = 120000;
+    const FIRST_ORDER_POPUP_STORAGE_KEY = 'etrat_hadar_first_order_popup_seen';
+    const FIRST_ORDER_POPUP_DELAY_MS = 2000;
+    const CART_VERSION_KEY = 'etrat_hadar_cart_version';
+    const CART_VERSION = '1';
+    let currentUser = null;
+    let cart = [];
+    let pendingProduct = null;
+
+    function loadStoredAuth() {
+        const savedUser = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null');
+        if (savedUser && savedUser.name && savedUser.email) {
+            if (!savedUser.provider) savedUser.provider = 'manual';
+            currentUser = savedUser;
+        }
+    }
+
+    function saveCurrentUser() {
+        if (currentUser) {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
+        }
+    }
+
+    function renderAuthState() {
+        const userLabel = document.getElementById('userLabel');
+        const signOutButton = document.getElementById('signOutButton');
+        const navSignInButton = document.getElementById('navSignInButton');
+        const signInButton = document.getElementById('googleSignInButton');
+
+        if (currentUser) {
+            userLabel.textContent = `שלום ${currentUser.name.split(' ')[0] || currentUser.name}`;
+            userLabel.style.display = 'inline-flex';
+            if (signOutButton) signOutButton.style.display = 'inline-flex';
+            if (navSignInButton) navSignInButton.style.display = 'none';
+            if (signInButton) signInButton.style.display = 'none';
+        } else {
+            if (userLabel) userLabel.style.display = 'none';
+            if (signOutButton) signOutButton.style.display = 'none';
+            if (navSignInButton) navSignInButton.style.display = 'inline-flex';
+            if (signInButton) signInButton.style.display = 'flex';
+        }
+    }
+
+    function signInUser(name, email, picture = '', provider = 'manual', accountId = '') {
+        currentUser = {
+            id: accountId || (email || '').trim().toLowerCase(),
+            name: name.trim(),
+            email: (email || '').trim().toLowerCase(),
+            picture,
+            provider
+        };
+        saveCurrentUser();
+        renderAuthState();
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        renderAuthState();
+    }
+
+    function openAuthModal() {
+        document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+
+    function showPromoPopupOnce() {
+        setTimeout(() => {
+            const firstOrderPopup = document.getElementById('firstOrderDiscountPopup');
+            if (firstOrderPopup) {
+                firstOrderPopup.style.display = 'none';
+            }
+
+            const popup = document.getElementById('promoPopup');
+            if (popup) {
+                popup.style.display = 'flex';
+            }
+        }, DISCOUNT_POPUP_DELAY_MS);
+    }
+
+    function canGetFirstOrderDiscount() {
+        return !!(currentUser && currentUser.email && currentUser.id !== 'guest');
+    }
+
+    function showFirstOrderDiscountPopupOnce() {
+        if (canGetFirstOrderDiscount() && hasFirstOrderDiscount()) {
+            return;
+        }
+
+        setTimeout(() => {
+            const popup = document.getElementById('firstOrderDiscountPopup');
+            if (!popup || (canGetFirstOrderDiscount() && hasFirstOrderDiscount())) {
+                return;
+            }
+            popup.style.display = 'flex';
+        }, FIRST_ORDER_POPUP_DELAY_MS);
+    }
+
+    function showParaffinOfferPopupOnce() {
+        const hasSeen = sessionStorage.getItem(PARAFFIN_OFFER_POPUP_STORAGE_KEY) === 'true';
+        if (hasSeen) {
+            return;
+        }
+
+        setTimeout(() => {
+            const popup = document.getElementById('paraffinOfferPopup');
+            if (popup) {
+                popup.style.display = 'flex';
+            }
+        }, PARAFFIN_OFFER_POPUP_DELAY_MS);
+
+        sessionStorage.setItem(PARAFFIN_OFFER_POPUP_STORAGE_KEY, 'true');
+    }
+
+    function closeFirstOrderDiscountPopup() {
+        const popup = document.getElementById('firstOrderDiscountPopup');
+        if (popup) popup.style.display = 'none';
+    }
+
+    function closeParaffinOfferPopup() {
+        const popup = document.getElementById('paraffinOfferPopup');
+        if (popup) popup.style.display = 'none';
+    }
+
+    function closePromoPopup() {
+        const popup = document.getElementById('promoPopup');
+        if (popup) popup.style.display = 'none';
+    }
+
+    function continueAsGuest() {
+        currentUser = { id: 'guest', name: 'אורח', email: '', provider: 'guest' };
+        saveCurrentUser();
+        renderAuthState();
+        closeAuthModal();
+    }
+
+    function getCurrentUserEmailKey() {
+        return currentUser && currentUser.email ? currentUser.email.trim().toLowerCase() : 'guest';
+    }
+
+    function openDiscountLoginPopup() {
+        openAuthModal();
+        const popup = document.getElementById('authModal');
+        if (popup) {
+            const heading = popup.querySelector('h2');
+            const message = popup.querySelector('p');
+            if (heading) heading.textContent = '10% הנחה בקנייה ראשונה';
+            if (message) message.textContent = 'התחברו עכשיו כדי לקבל 10% הנחה בקנייה הראשונה. ההנחה ניתנת רק למי שמתחבר, כך שלא כל אחד יקבל יותר מהזכות פעם אחת.';
+        }
+    }
+
+    function handleManualLogin(event) {
+        if (event && typeof event.preventDefault === 'function') {
+            event.preventDefault();
+        }
+
+        const nameInput = document.getElementById('manualAuthName');
+        const emailInput = document.getElementById('manualAuthEmail');
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+
+        if (!name || !email) {
+            alert('יש למלא שם ואימייל כדי להמשיך.');
+            return;
+        }
+
+        signInUser(name, email, '', 'manual');
+        closeAuthModal();
+    }
+
+    function triggerGoogleSignIn() {
+        if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID') {
+            if (window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.prompt === 'function') {
+                window.google.accounts.id.prompt();
+                return;
+            }
+            loadGoogleScript();
+            setTimeout(() => {
+                if (window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.prompt === 'function') {
+                    window.google.accounts.id.prompt();
+                }
+            }, 1200);
+            return;
+        }
+
+        const emailInput = document.getElementById('manualAuthEmail');
+        if (emailInput) {
+            emailInput.focus();
+        }
+    }
+
+    function decodeGoogleCredential(credential) {
+        try {
+            const payload = credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(atob(payload));
+        } catch (error) {
+            console.error('לא ניתן לפענח את אסימון Google', error);
+            return null;
+        }
+    }
+
+    function handleCredentialResponse(response) {
+        const payload = decodeGoogleCredential(response.credential);
+        if (!payload) return;
+        const name = payload.name || `${payload.given_name || ''} ${payload.family_name || ''}`.trim();
+        const email = payload.email || `${payload.sub}@google.local`;
+        const googleAccountId = payload.sub ? `google:${payload.sub}` : (email || '').trim().toLowerCase();
+        signInUser(name, email, payload.picture || '', 'google', googleAccountId);
+    }
+
+    function loadGoogleScript() {
+        if (document.getElementById('google-gsi-script')) return;
+        const script = document.createElement('script');
+        script.id = 'google-gsi-script';
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = initializeGoogleAuth;
+        document.head.appendChild(script);
+    }
+
+    function initializeGoogleAuth() {
+        const buttonContainer = document.getElementById('googleSignInButton');
+        if (!buttonContainer) return;
+
+        if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID') {
+            buttonContainer.innerHTML = '<span style="font-size:0.95em;color:var(--gold-soft);">Google Client ID חסר. לחיצה על "התחבר עם Google" תאפשר התחברות ידנית.</span>';
+            return;
+        }
+
+        if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+            loadGoogleScript();
+            return;
+        }
+
+        buttonContainer.innerHTML = '';
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: false
+        });
+        google.accounts.id.renderButton(buttonContainer, {
+            theme: 'outline',
+            size: 'medium',
+            width: 220,
+            text: 'signin_with'
+        });
+    }
+
+    function getCartStorageKey() {
+        return CART_STORAGE_KEY;
+    }
+
+    function prepareContactFormMessage() {
+        const messageEl = document.getElementById('contactMessage');
+        const successMessage = document.getElementById('contactSuccessMessage');
+
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+
+        if (cart.length > 0 && messageEl && !messageEl.value.trim()) {
+            messageEl.value = buildOrderSummary();
+        }
+
+        return true;
+    }
+
+    function sendContactForm(event) {
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const phone = document.getElementById('contactPhone').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        if (!name || !email || !phone || !message) {
+            alert('אנא מלא את כל השדות כדי לשלוח את ההודעה.');
+            event.preventDefault();
+            return false;
+        }
+
+        if (window.location.protocol !== 'http:' && window.location.protocol !== 'https:') {
+            const subject = 'פנייה מאתר עטרת הדר';
+            const body = `שם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\n\n${message}`;
+            const mailto = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailto;
+            event.preventDefault();
+            return false;
+        }
+
+        return true;
+    }
+
+    function sendCreateProductForm(event) {
+        const name = document.getElementById('creatorName').value.trim();
+        const email = document.getElementById('creatorEmail').value.trim();
+        const phone = document.getElementById('creatorPhone').value.trim();
+        const product = document.getElementById('creatorProduct').value.trim();
+        if (!name || !email || !phone || !product) {
+            alert('אנא מלא את כל השדות כדי לשלוח את הבקשה.');
+            event.preventDefault();
+            return false;
+        }
+
+        if (window.location.protocol !== 'http:' && window.location.protocol !== 'https:') {
+            const subject = 'בקשת יצירת מוצר - עטרת הדר';
+            const body = `שם: ${name}\nאימייל: ${email}\nטלפון: ${phone}\nמוצר מבוקש: ${product}\n\nהתמונה לא נשלחת אוטומטית מקובץ מקומי.`;
+            const mailto = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailto;
+            event.preventDefault();
+            return false;
+        }
+
+        return true;
+    }
+
+    function loadStoredCart() {
+        const savedCart = JSON.parse(localStorage.getItem(getCartStorageKey()) || 'null');
+        const fallbackCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        cart = Array.isArray(savedCart) && savedCart.length ? savedCart : (Array.isArray(fallbackCart) ? fallbackCart : []);
+        localStorage.setItem(CART_VERSION_KEY, CART_VERSION);
+        updateCartCount();
+    }
+
+    function saveCart() {
+        localStorage.setItem(CART_VERSION_KEY, CART_VERSION);
+        localStorage.setItem(getCartStorageKey(), JSON.stringify(cart));
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    }
+
+    function getDiscountStorageKey() {
+        return `etrat_hadar_first_order_discount_${getCurrentUserEmailKey()}`;
+    }
+
+    function hasFirstOrderDiscount() {
+        if (!canGetFirstOrderDiscount()) {
+            return false;
+        }
+        return localStorage.getItem(getDiscountStorageKey()) === 'true';
+    }
+
+    function markFirstOrderDiscountUsed() {
+        if (!canGetFirstOrderDiscount()) {
+            return;
+        }
+        localStorage.setItem(getDiscountStorageKey(), 'true');
+    }
+
+    function getCartSubtotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    }
+
+    function getFirstOrderDiscountState(subtotal = getCartSubtotal()) {
+        const eligible = subtotal > 0 && canGetFirstOrderDiscount() && !hasFirstOrderDiscount();
+        const discountAmount = eligible ? subtotal * FIRST_ORDER_DISCOUNT_RATE : 0;
+        const discountedTotal = subtotal - discountAmount;
+        return { eligible, discountAmount, discountedTotal };
+    }
+
+    function applyFirstOrderDiscountIfEligible() {
+        const state = getFirstOrderDiscountState();
+        if (state.eligible) {
+            markFirstOrderDiscountUsed();
+        }
+        return state;
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if (pageId === 'cart') {
+            renderCart();
+        }
+        if (pageId === 'contact') {
+            populateContactForm();
+        }
+        window.scrollTo(0, 0);
+    }
+
+    function updateCartCount() {
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartCountEl = document.getElementById('cartCount');
+        if (cartCountEl) cartCountEl.textContent = count;
+    }
+
+    function populateContactForm() {
+        const nameInput = document.getElementById('contactName');
+        const emailInput = document.getElementById('contactEmail');
+        if (!nameInput || !emailInput) return;
+        if (currentUser && currentUser.name && !nameInput.value.trim()) {
+            nameInput.value = currentUser.name;
+        }
+        if (currentUser && currentUser.email && !emailInput.value.trim()) {
+            emailInput.value = currentUser.email;
+        }
+    }
+
+    function handlePageFromLocation() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('contact_success') === '1') {
+            showPage('contact');
+            const successMessage = document.getElementById('contactSuccessMessage');
+            if (successMessage) {
+                successMessage.style.display = 'block';
+            }
+            history.replaceState(null, '', window.location.pathname + '#contact');
+        } else if (params.get('create_product_success') === '1') {
+            showPage('create-product');
+            const successMessage = document.getElementById('createProductSuccessMessage');
+            if (successMessage) {
+                successMessage.style.display = 'block';
+            }
+            history.replaceState(null, '', window.location.pathname + '#create-product');
+        } else if (window.location.hash) {
+            const page = window.location.hash.substring(1);
+            if (document.getElementById(page)) {
+                showPage(page);
+            }
+        }
+
+        const nextInput = document.getElementById('contactNextInput');
+        if (nextInput) {
+            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+                nextInput.value = `${window.location.origin}${window.location.pathname}?contact_success=1`;
+            } else {
+                nextInput.value = '';
+            }
+        }
+
+        const createNextInput = document.getElementById('createProductNextInput');
+        if (createNextInput) {
+            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+                createNextInput.value = `${window.location.origin}${window.location.pathname}?create_product_success=1#create-product`;
+            } else {
+                createNextInput.value = '';
+            }
+        }
+    }
+
+    function submitCreateProductForm(event) {
+        const name = document.getElementById('creatorName').value.trim();
+        const email = document.getElementById('creatorEmail').value.trim();
+        const phone = document.getElementById('creatorPhone').value.trim();
+        const product = document.getElementById('creatorProduct').value.trim();
+        if (!name || !email || !phone || !product) {
+            alert('אנא מלא את כל השדות כדי לשלוח את הבקשה.');
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+
+    function previewProductImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('productImagePreview');
+        const container = document.getElementById('imagePreviewContainer');
+
+        if (file && file.type.startsWith('image/')) {
+            preview.src = URL.createObjectURL(file);
+            container.style.display = 'block';
+        } else {
+            preview.src = '';
+            container.style.display = 'none';
+        }
+    }
+
+    function openProductOptions(name, price, img) {
+        pendingProduct = { name, price, img };
+        const sizeLabel = document.getElementById('sizeLabel');
+        const sizeSelect = document.getElementById('productSize');
+        const colorLabel = document.getElementById('colorLabel');
+        const colorSelect = document.getElementById('productColor');
+        const variantLabel = document.getElementById('variantLabel');
+        const variantSelect = document.getElementById('productVariant');
+        const coverVariantLabel = document.getElementById('coverVariantLabel');
+        const coverVariantSelect = document.getElementById('productCoverVariant');
+        const isCupProduct = name.includes('כוסיות');
+        const isOilProduct = name.includes('שמן');
+        const isStickProduct = name.includes('קשית');
+        const isCoverProduct = name.includes('נרתיק לולב');
+        const isMagnifier = name.includes('זכוכית');
+
+        document.getElementById('productOptionsTitle').textContent = name;
+        document.getElementById('productOptionsPrice').textContent = `₪${price}`;
+        sizeLabel.style.display = isCupProduct ? 'block' : 'none';
+        sizeSelect.style.display = isCupProduct ? 'block' : 'none';
+        sizeSelect.value = '';
+
+        // Color options: magnifier -> only זהב/כסף, oil -> original palette, otherwise hidden
+        if (isMagnifier) {
+            colorLabel.style.display = 'block';
+            colorSelect.style.display = 'block';
+            colorSelect.innerHTML = '<option value="">בחר צבע</option><option value="זהב">זהב</option><option value="כסף">כסף</option>';
+            colorSelect.value = '';
+        } else if (isOilProduct) {
+            colorLabel.style.display = 'block';
+            colorSelect.style.display = 'block';
+            colorSelect.innerHTML = '<option value="">בחר צבע</option><option value="שקוף">שקוף</option><option value="כחול">כחול</option><option value="אדום סגול">אדום סגול</option><option value="תורכיז ירוק">תורכיז ירוק</option><option value="צהוב">צהוב</option>';
+            colorSelect.value = '';
+        } else {
+            colorLabel.style.display = 'none';
+            colorSelect.style.display = 'none';
+            colorSelect.value = '';
+        }
+
+        variantLabel.style.display = isStickProduct ? 'block' : 'none';
+        variantSelect.style.display = isStickProduct ? 'block' : 'none';
+        variantSelect.value = '';
+        coverVariantLabel.style.display = isCoverProduct ? 'block' : 'none';
+        coverVariantSelect.style.display = isCoverProduct ? 'block' : 'none';
+        coverVariantSelect.value = '';
+        document.getElementById('productOptionsPopup').style.display = 'flex';
+    }
+
+    function closeProductOptionsPopup() {
+        document.getElementById('productOptionsPopup').style.display = 'none';
+    }
+
+    function submitProductOptions(event) {
+        event.preventDefault();
+        if (!pendingProduct) return;
+
+        const size = document.getElementById('productSize').value;
+        const color = document.getElementById('productColor').value;
+        const variant = document.getElementById('productVariant').value;
+        const coverVariant = document.getElementById('productCoverVariant').value;
+        let price = pendingProduct.price;
+        let details = '';
+
+        if (pendingProduct.name.includes('כוסיות')) {
+            if (!size) {
+                alert('אנא בחר גודל לכוסיות');
+                return;
+            }
+            price = size === 'בינוני' ? 30 : size === 'גדול' ? 40 : 20;
+            details = `גודל: ${size}`;
+        } else if (pendingProduct.name.includes('שמן') || pendingProduct.name.includes('זכוכית')) {
+            if (!color) {
+                alert('אנא בחר צבע למוצר');
+                return;
+            }
+            details = `צבע: ${color}`;
+        } else if (pendingProduct.name.includes('קשית')) {
+            if (!variant) {
+                alert('אנא בחר קשית או פתילה');
+                return;
+            }
+            price = variant === 'פתילה' ? 10 : 3;
+            details = `סוג: ${variant}`;
+        } else if (pendingProduct.name.includes('נרתיק לולב')) {
+            if (!coverVariant) {
+                alert('אנא בחר סוג נרתיק');
+                return;
+            }
+            price = coverVariant === 'ארוך' ? 15 : coverVariant === 'ואקום' ? 20 : 10;
+            details = `סוג: ${coverVariant}`;
+        }
+
+        addToCart(pendingProduct.name, price, pendingProduct.img, '', details);
+        closeProductOptionsPopup();
+    }
+
+    function addToCart(name, price, img, color = '', details = '') {
+        const existing = cart.find(item => item.name === name && item.color === color && item.details === details);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({ name, price, img, quantity: 1, color, details });
+        }
+        saveCart();
+        updateCartCount();
+        const extraInfo = details ? `\n${details}` : '';
+        document.getElementById('popupMessage').textContent = `${name} נוסף לעגלה. מחיר יחידה ₪${price}.${extraInfo}`;
+        document.getElementById('cartAddPopup').style.display = 'flex';
+    }
+
+    function closeAddCartPopup() {
+        document.getElementById('cartAddPopup').style.display = 'none';
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cartItems');
+        const totalEl = document.getElementById('cartTotal');
+        container.innerHTML = '';
+        if (cart.length === 0) {
+            container.innerHTML = '<p class="cart-empty">העגלה ריקה.</p>';
+            totalEl.textContent = '';
+            return;
+        }
+
+        cart.forEach((item, index) => {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'cart-item';
+            itemEl.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <div class="cart-item-details">
+                    <p><strong>${item.name}</strong></p>
+                    <p>₪${item.price} × ${item.quantity}</p>
+                    ${item.color ? `<p>צבע: ${item.color}</p>` : ''}
+                    ${item.details ? `<p>פרטים: ${item.details}</p>` : ''}
+                    <p>סה"כ: ₪${item.price * item.quantity}</p>
+                </div>
+                <button type="button" class="btn-add" onclick="removeCartItem(${index})">הסר</button>
+            `;
+            container.appendChild(itemEl);
+        });
+
+        const total = getCartSubtotal();
+        const discountState = getFirstOrderDiscountState(total);
+        if (discountState.eligible) {
+            totalEl.textContent = `סה"כ לתשלום: ₪${discountState.discountedTotal} (הנחה 10% לקנייה ראשונה)`;
+        } else if (total > 0 && !canGetFirstOrderDiscount() && !hasFirstOrderDiscount()) {
+            totalEl.textContent = `סה"כ לתשלום: ₪${total} (להנחה של 10% בקנייה ראשונה: התחברו עם Google)`;
+        } else {
+            totalEl.textContent = `סה"כ לתשלום: ₪${total}`;
+        }
+    }
+
+    function removeCartItem(index) {
+        if (index >= 0 && index < cart.length) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartCount();
+            renderCart();
+        }
+    }
+
+    function filterProducts() {
+        const query = document.getElementById('productSearchInput')?.value.trim().toLowerCase() || '';
+        const cards = document.querySelectorAll('#shop .product-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const title = card.querySelector('h3')?.textContent.trim().toLowerCase() || '';
+            const description = card.querySelector('p')?.textContent.trim().toLowerCase() || '';
+            const matchesQuery = !query || title.includes(query) || description.includes(query);
+            card.style.display = matchesQuery ? '' : 'none';
+            if (matchesQuery) visibleCount += 1;
+        });
+
+        const note = document.querySelector('.product-search-note');
+        if (note) {
+            note.textContent = visibleCount === 0 ? 'לא נמצאו תוצאות. נסו חיפוש אחר או בחרו מילים כלליות יותר.' : 'הקלידו שמה של חבילה או מוצר כדי למצוא במהירות תוצאה רלוונטית.';
+        }
+    }
+
+    function checkoutOrder() {
+        const discountState = applyFirstOrderDiscountIfEligible();
+        const message = document.querySelector('textarea[name="message"]');
+        if (message) {
+            message.value = buildOrderSummary(discountState);
+        }
+        showPage('contact');
+    }
+
+    function buildOrderSummary(discountState = null) {
+        if (cart.length === 0) return 'אני רוצה לקבל פרטים על הזמנה.';
+        const lines = cart.map(item => {
+            const options = [];
+            if (item.color) options.push(`צבע: ${item.color}`);
+            if (item.details) options.push(`פרטים: ${item.details}`);
+            const suffix = options.length ? ` (${options.join(', ')})` : '';
+            return `${item.name} x${item.quantity} - ₪${item.price * item.quantity}${suffix}`;
+        });
+        const subtotal = getCartSubtotal();
+        const state = discountState || getFirstOrderDiscountState(subtotal);
+        const discountText = state.eligible ? `\nהנחה ראשונה: 10% - ₪${Math.round(state.discountAmount)}` : '';
+        return `הזמנה מעגלת הקניות:\n${lines.join('\n')}\nסה"כ לפני הנחה: ₪${subtotal}${discountText}\nסה"כ לתשלום: ₪${Math.round(state.discountedTotal)}`;
+    }
+
+    function getStoredTestimonials() {
+        const raw = JSON.parse(localStorage.getItem(TESTIMONIALS_STORAGE_KEY) || '[]');
+        return Array.isArray(raw) ? raw : [];
+    }
+
+    function saveStoredTestimonials(testimonials) {
+        localStorage.setItem(TESTIMONIALS_STORAGE_KEY, JSON.stringify(testimonials));
+    }
+
+    function toggleTestimonialsEmptyState() {
+        const emptyState = document.getElementById('testimonialsEmptyState');
+        const list = document.getElementById('testimonials-list');
+        if (!emptyState || !list) return;
+        emptyState.style.display = list.children.length > 0 ? 'none' : 'block';
+    }
+
+    function renderTestimonialCard(entry, prepend = true) {
+        const list = document.getElementById('testimonials-list');
+        if (!list) return;
+
+        const card = document.createElement('div');
+        card.className = 'testimonial-card';
+
+        if (entry.imageData) {
+            const photo = document.createElement('img');
+            photo.src = entry.imageData;
+            photo.alt = 'תמונת לקוח';
+            photo.className = 'testimonial-photo';
+            card.appendChild(photo);
+        }
+
+        const contentWrap = document.createElement('div');
+        contentWrap.className = 'testimonial-content';
+
+        const starsWrap = document.createElement('div');
+        starsWrap.className = 'testimonial-stars';
+        for (let i = 0; i < 5; i += 1) {
+            const star = document.createElement('span');
+            if (i < Number(entry.rating)) {
+                star.className = 'filled';
+            }
+            star.textContent = '★';
+            starsWrap.appendChild(star);
+        }
+
+        const quote = document.createElement('p');
+        quote.textContent = `"${entry.content}"`;
+
+        const nameLine = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = `- ${entry.name}`;
+        nameLine.appendChild(strong);
+
+        contentWrap.appendChild(starsWrap);
+        contentWrap.appendChild(quote);
+        contentWrap.appendChild(nameLine);
+        card.appendChild(contentWrap);
+
+        if (prepend) {
+            list.prepend(card);
+        } else {
+            list.appendChild(card);
+        }
+
+        toggleTestimonialsEmptyState();
+    }
+
+    function loadStoredTestimonials() {
+        const testimonials = getStoredTestimonials();
+        testimonials.forEach((entry) => renderTestimonialCard(entry, false));
+        toggleTestimonialsEmptyState();
+    }
+
+    function readImageAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('image-read-failed'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function addTestimonial() {
+        const name = document.getElementById('testName').value.trim();
+        const content = document.getElementById('testContent').value.trim();
+        const rating = document.getElementById('testRating').value;
+        const imageInput = document.getElementById('testImage');
+        const imageFile = imageInput && imageInput.files ? imageInput.files[0] : null;
+
+        if (!name || !content || !rating) {
+            alert('אנא מלאו שם, תוכן ודירוג כוכבים.');
+            return;
+        }
+
+        if (imageFile && !imageFile.type.startsWith('image/')) {
+            alert('ניתן להעלות רק קובץ תמונה.');
+            return;
+        }
+
+        let imageData = '';
+        if (imageFile) {
+            try {
+                imageData = await readImageAsDataUrl(imageFile);
+            } catch (error) {
+                alert('לא הצלחנו לקרוא את התמונה. נסו שוב עם קובץ אחר.');
+                return;
+            }
+        }
+
+        const entry = {
+            name,
+            content,
+            rating: Number(rating),
+            imageData,
+            createdAt: Date.now()
+        };
+
+        renderTestimonialCard(entry, true);
+
+        const storedTestimonials = getStoredTestimonials();
+        storedTestimonials.unshift(entry);
+        if (storedTestimonials.length > 30) {
+            storedTestimonials.length = 30;
+        }
+        saveStoredTestimonials(storedTestimonials);
+
+        document.getElementById('testimonialForm').reset();
+        sendToFormspree(name, content, rating, imageFile ? imageFile.name : '');
+        alert('תודה על ההמלצה!');
+    }
+
+    function sendToFormspree(name, content, rating, imageName = '') {
+        const formData = { name, content, rating, imageName };
+        fetch('https://formspree.io/f/mvzdyazo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+    }
+
+    function copyContact(value, message) {
+        const copyValue = () => {
+            if (!navigator.clipboard) {
+                const temp = document.createElement('textarea');
+                temp.value = value;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+            } else {
+                navigator.clipboard.writeText(value).catch(() => {
+                    const temp = document.createElement('textarea');
+                    temp.value = value;
+                    document.body.appendChild(temp);
+                    temp.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(temp);
+                });
+            }
+        };
+
+        copyValue();
+        showToast(message);
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toastMessage');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        clearTimeout(window.toastTimeout);
+        window.toastTimeout = setTimeout(() => {
+            toast.style.transition = 'opacity 0.3s ease';
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.transition = '';
+            }, 320);
+        }, 2200);
+    }
+
+    window.onload = function() {
+        loadStoredAuth();
+        loadStoredCart();
+        renderAuthState();
+        loadGoogleScript();
+        updateCartCount();
+        handlePageFromLocation();
+        loadStoredTestimonials();
+
+        showPromoPopupOnce();
+        showFirstOrderDiscountPopupOnce();
+        showParaffinOfferPopupOnce();
+    };
+</script>
+</body>
+</html>
