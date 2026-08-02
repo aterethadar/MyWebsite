@@ -2089,6 +2089,7 @@
 
             document.getElementById('testimonialForm').reset();
             setTestimonialStatus('ההמלצה נשלחה לאישור. לאחר אישור היא תופיע באתר.', 'success');
+            showToast('תודה רבה! ההמלצה נשלחה אלינו ונעבור עליה לאישור בהקדם.');
         } catch (error) {
             setTestimonialStatus('לא הצלחנו לשלוח את ההמלצה לאישור. נסו שוב בעוד כמה דקות.', 'error');
         }
