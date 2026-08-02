@@ -795,13 +795,9 @@
 <div id="authModal" class="auth-modal" onclick="if(event.target===this) closeAuthModal()">
     <div class="auth-modal-content">
         <span class="close-popup" onclick="closeAuthModal()">&times;</span>
-        <h2>התחברות ל גוגל וגם התחברות בדואל</h2>
+        <h2>התחברות עם Google</h2>
         <div id="googleSignInButton" class="google-signin-button" style="margin-top:16px;"></div>
-        <form id="manualAuthForm" onsubmit="handleManualLogin(event)" style="margin-top:16px; width:100%;">
-            <input type="text" id="manualAuthName" placeholder="שם מלא" required style="width:100%; margin-bottom:8px; padding:10px; border:1px solid #d8c18a; border-radius:8px;">
-            <input type="email" id="manualAuthEmail" placeholder="אימייל" required style="width:100%; margin-bottom:8px; padding:10px; border:1px solid #d8c18a; border-radius:8px;">
-            <button type="submit" class="guest-button" style="margin-top:4px;">התחברות בדואל</button>
-        </form>
+        <p style="margin-top:12px; font-size:0.95em; color:#6b5b41;">ההתחברות מתבצעת באמצעות חשבון Google בלבד.</p>
     </div>
 </div>
 
@@ -1085,7 +1081,7 @@
         <label for="testImage" class="testimonial-image-label">תמונה להמלצה (אופציונלי)</label>
         <input type="file" id="testImage" accept="image/*">
         <p class="testimonial-image-note">ניתן לצרף תמונה אחת. אם לא תצורף תמונה, ההמלצה תפורסם בלי תמונת לקוח.</p>
-        <button type="button" class="btn-send" onclick="addTestimonial()">פרסם המלצה</button>
+        <button type="button" class="btn-send" onclick="submitTestimonialForApproval()">שלח לאישור</button>
     </form>
 </div>
 
@@ -1136,6 +1132,7 @@
     const BUSINESS_EMAIL = 'aterethadar@gmail.com';
     const DISCOUNT_POPUP_STORAGE_KEY = 'etrat_hadar_discount_popup_seen';
     const TESTIMONIALS_STORAGE_KEY = 'etrat_hadar_testimonials';
+    const TESTIMONIALS_API_BASE = '/api/testimonials';
     const PARAFFIN_OFFER_POPUP_STORAGE_KEY = 'etrat_hadar_paraffin_offer_seen';
     const FIRST_ORDER_DISCOUNT_RATE = 0.1;
     const DISCOUNT_POPUP_DELAY_MS = 25000;
@@ -1307,25 +1304,6 @@
         }
     }
 
-    function handleManualLogin(event) {
-        if (event && typeof event.preventDefault === 'function') {
-            event.preventDefault();
-        }
-
-        const nameInput = document.getElementById('manualAuthName');
-        const emailInput = document.getElementById('manualAuthEmail');
-        const name = nameInput ? nameInput.value.trim() : '';
-        const email = emailInput ? emailInput.value.trim() : '';
-
-        if (!name || !email) {
-            alert('יש למלא שם ואימייל כדי להמשיך.');
-            return;
-        }
-
-        signInUser(name, email, '', 'manual');
-        closeAuthModal();
-    }
-
     function triggerGoogleSignIn() {
         if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID') {
             if (window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.prompt === 'function') {
@@ -1341,10 +1319,7 @@
             return;
         }
 
-        const emailInput = document.getElementById('manualAuthEmail');
-        if (emailInput) {
-            emailInput.focus();
-        }
+        showToast('התחברות זמינה דרך Google בלבד.');
     }
 
     function decodeGoogleCredential(credential) {
@@ -1903,9 +1878,33 @@
         toggleTestimonialsEmptyState();
     }
 
-    function loadStoredTestimonials() {
-        const testimonials = getStoredTestimonials();
-        testimonials.forEach((entry) => renderTestimonialCard(entry, false));
+    async function loadApprovedTestimonials() {
+        const list = document.getElementById('testimonials-list');
+        if (!list) return;
+        list.innerHTML = '';
+
+        try {
+            const response = await fetch(`${TESTIMONIALS_API_BASE}/approved`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('approved-fetch-failed');
+            }
+
+            const data = await response.json();
+            const testimonials = Array.isArray(data.testimonials) ? data.testimonials : [];
+
+            testimonials.forEach((entry) => renderTestimonialCard(entry, false));
+            saveStoredTestimonials(testimonials);
+        } catch (error) {
+            const fallback = getStoredTestimonials();
+            fallback.forEach((entry) => renderTestimonialCard(entry, false));
+        }
+
         toggleTestimonialsEmptyState();
     }
 
@@ -1918,7 +1917,7 @@
         });
     }
 
-    async function addTestimonial() {
+    async function submitTestimonialForApproval() {
         const name = document.getElementById('testName').value.trim();
         const content = document.getElementById('testContent').value.trim();
         const rating = document.getElementById('testRating').value;
@@ -1953,30 +1952,26 @@
             createdAt: Date.now()
         };
 
-        renderTestimonialCard(entry, true);
+        try {
+            const response = await fetch(`${TESTIMONIALS_API_BASE}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(entry)
+            });
 
-        const storedTestimonials = getStoredTestimonials();
-        storedTestimonials.unshift(entry);
-        if (storedTestimonials.length > 30) {
-            storedTestimonials.length = 30;
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(result.error || 'submit-failed');
+            }
+
+            document.getElementById('testimonialForm').reset();
+            alert('ההמלצה נשלחה לאישור. לאחר אישור היא תופיע באתר.');
+        } catch (error) {
+            alert('לא הצלחנו לשלוח את ההמלצה לאישור. נסו שוב בעוד כמה דקות.');
         }
-        saveStoredTestimonials(storedTestimonials);
-
-        document.getElementById('testimonialForm').reset();
-        sendToFormspree(name, content, rating, imageFile ? imageFile.name : '');
-        alert('תודה על ההמלצה!');
-    }
-
-    function sendToFormspree(name, content, rating, imageName = '') {
-        const formData = { name, content, rating, imageName };
-        fetch('https://formspree.io/f/mvzdyazo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
     }
 
     function copyContact(value, message) {
@@ -2028,7 +2023,7 @@
         loadGoogleScript();
         updateCartCount();
         handlePageFromLocation();
-        loadStoredTestimonials();
+        loadApprovedTestimonials();
 
         showPromoPopupOnce();
         showFirstOrderDiscountPopupOnce();
