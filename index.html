@@ -1063,6 +1063,8 @@
                 <option value="ארוך">ארוך — ₪15</option>
                 <option value="קצר">קצר — ₪10</option>
             </select>
+            <label id="quantityLabel" for="productQuantity">בחר כמות</label>
+            <select id="productQuantity"></select>
             <button type="submit" class="btn-send" style="margin-top: 16px;">הוסף לעגלה</button>
         </form>
     </div>
@@ -1630,6 +1632,19 @@
         }
     }
 
+    function ensureProductQuantityOptions() {
+        const quantitySelect = document.getElementById('productQuantity');
+        if (!quantitySelect) return;
+        if (quantitySelect.options.length > 0) return;
+
+        for (let i = 1; i <= 100; i += 1) {
+            const option = document.createElement('option');
+            option.value = String(i);
+            option.textContent = String(i);
+            quantitySelect.appendChild(option);
+        }
+    }
+
     function openProductOptions(name, price, img) {
         pendingProduct = { name, price, img };
         const sizeLabel = document.getElementById('sizeLabel');
@@ -1640,11 +1655,14 @@
         const variantSelect = document.getElementById('productVariant');
         const coverVariantLabel = document.getElementById('coverVariantLabel');
         const coverVariantSelect = document.getElementById('productCoverVariant');
+        const quantitySelect = document.getElementById('productQuantity');
         const isCupProduct = name.includes('כוסיות');
         const isOilProduct = name.includes('שמן');
         const isStickProduct = name.includes('קשית');
         const isCoverProduct = name.includes('נרתיק לולב');
         const isMagnifier = name.includes('זכוכית');
+
+        ensureProductQuantityOptions();
 
         document.getElementById('productOptionsTitle').textContent = name;
         document.getElementById('productOptionsPrice').textContent = `₪${price}`;
@@ -1675,6 +1693,9 @@
         coverVariantLabel.style.display = isCoverProduct ? 'block' : 'none';
         coverVariantSelect.style.display = isCoverProduct ? 'block' : 'none';
         coverVariantSelect.value = '';
+        if (quantitySelect) {
+            quantitySelect.value = '1';
+        }
         document.getElementById('productOptionsPopup').style.display = 'flex';
     }
 
@@ -1690,8 +1711,14 @@
         const color = document.getElementById('productColor').value;
         const variant = document.getElementById('productVariant').value;
         const coverVariant = document.getElementById('productCoverVariant').value;
+        const quantity = Number(document.getElementById('productQuantity').value || '1');
         let price = pendingProduct.price;
         let details = '';
+
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
+            alert('אנא בחר כמות בין 1 ל-100');
+            return;
+        }
 
         if (pendingProduct.name.includes('כוסיות')) {
             if (!size) {
@@ -1722,21 +1749,22 @@
             details = `סוג: ${coverVariant}`;
         }
 
-        addToCart(pendingProduct.name, price, pendingProduct.img, '', details);
+        addToCart(pendingProduct.name, price, pendingProduct.img, '', details, quantity);
         closeProductOptionsPopup();
     }
 
-    function addToCart(name, price, img, color = '', details = '') {
+    function addToCart(name, price, img, color = '', details = '', quantity = 1) {
+        const safeQuantity = Number.isInteger(quantity) && quantity > 0 ? quantity : 1;
         const existing = cart.find(item => item.name === name && item.color === color && item.details === details);
         if (existing) {
-            existing.quantity += 1;
+            existing.quantity += safeQuantity;
         } else {
-            cart.push({ name, price, img, quantity: 1, color, details });
+            cart.push({ name, price, img, quantity: safeQuantity, color, details });
         }
         saveCart();
         updateCartCount();
         const extraInfo = details ? `\n${details}` : '';
-        document.getElementById('popupMessage').textContent = `${name} נוסף לעגלה. מחיר יחידה ₪${price}.${extraInfo}`;
+        document.getElementById('popupMessage').textContent = `${name} נוסף לעגלה. כמות: ${safeQuantity}. מחיר יחידה ₪${price}.${extraInfo}`;
         document.getElementById('cartAddPopup').style.display = 'flex';
     }
 
