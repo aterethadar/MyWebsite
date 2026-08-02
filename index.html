@@ -781,6 +781,7 @@
     <div class="nav-auth-wrap" style="color: var(--gold); font-weight: bold; font-size: 1.1em;">
         <button id="navSignInButton" class="auth-button" onclick="openAuthModal()">להתחברות לאתר</button>
         <button id="signOutButton" class="auth-button" style="display:none;" onclick="logoutUser()">התנתק</button>
+        <img id="userAvatar" alt="תמונת פרופיל" style="display:none; width:34px; height:34px; border-radius:50%; object-fit:cover; border:1px solid rgba(184,139,45,0.45);" />
         <span id="userLabel" style="display:none; white-space: nowrap;"></span>
         <div class="cart-icon" onclick="showPage('cart')" title="עגלה">
             <span>🛒</span>
@@ -1163,18 +1164,27 @@
 
     function renderAuthState() {
         const userLabel = document.getElementById('userLabel');
+        const userAvatar = document.getElementById('userAvatar');
         const signOutButton = document.getElementById('signOutButton');
         const navSignInButton = document.getElementById('navSignInButton');
         const signInButton = document.getElementById('googleSignInButton');
 
         if (currentUser) {
-            userLabel.textContent = `שלום ${currentUser.name.split(' ')[0] || currentUser.name}`;
+            const firstName = (currentUser.name || 'משתמש').split(' ')[0] || currentUser.name;
+            userLabel.textContent = `שלום ${firstName}`;
             userLabel.style.display = 'inline-flex';
+            if (userAvatar && currentUser.picture) {
+                userAvatar.src = currentUser.picture;
+                userAvatar.style.display = 'inline-flex';
+            } else if (userAvatar) {
+                userAvatar.style.display = 'none';
+            }
             if (signOutButton) signOutButton.style.display = 'inline-flex';
             if (navSignInButton) navSignInButton.style.display = 'none';
             if (signInButton) signInButton.style.display = 'none';
         } else {
             if (userLabel) userLabel.style.display = 'none';
+            if (userAvatar) userAvatar.style.display = 'none';
             if (signOutButton) signOutButton.style.display = 'none';
             if (navSignInButton) navSignInButton.style.display = 'inline-flex';
             if (signInButton) signInButton.style.display = 'flex';
@@ -1182,9 +1192,10 @@
     }
 
     function signInUser(name, email, picture = '', provider = 'manual', accountId = '') {
+        const normalizedName = (name || '').trim() || (email || '').trim() || 'משתמש';
         currentUser = {
             id: accountId || (email || '').trim().toLowerCase(),
-            name: name.trim(),
+            name: normalizedName,
             email: (email || '').trim().toLowerCase(),
             picture,
             provider
@@ -1226,13 +1237,13 @@
     }
 
     function showFirstOrderDiscountPopupOnce() {
-        if (canGetFirstOrderDiscount() && hasFirstOrderDiscount()) {
+        if (canGetFirstOrderDiscount()) {
             return;
         }
 
         setTimeout(() => {
             const popup = document.getElementById('firstOrderDiscountPopup');
-            if (!popup || (canGetFirstOrderDiscount() && hasFirstOrderDiscount())) {
+            if (!popup || canGetFirstOrderDiscount()) {
                 return;
             }
             popup.style.display = 'flex';
@@ -1282,6 +1293,10 @@
     }
 
     function openDiscountLoginPopup() {
+        if (currentUser) {
+            showToast('כבר מחוברים לחשבון. ההטבה תחושב אוטומטית בקופה.');
+            return;
+        }
         openAuthModal();
         const popup = document.getElementById('authModal');
         if (popup) {
@@ -1335,10 +1350,19 @@
     function decodeGoogleCredential(credential) {
         try {
             const payload = credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(atob(payload));
+            const decoded = atob(payload);
+            const utf8 = decodeURIComponent(Array.prototype.map.call(decoded, (char) => {
+                return '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(utf8);
         } catch (error) {
-            console.error('לא ניתן לפענח את אסימון Google', error);
-            return null;
+            try {
+                const payload = credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                return JSON.parse(atob(payload));
+            } catch (fallbackError) {
+                console.error('לא ניתן לפענח את אסימון Google', fallbackError);
+                return null;
+            }
         }
     }
 
@@ -1349,6 +1373,8 @@
         const email = payload.email || `${payload.sub}@google.local`;
         const googleAccountId = payload.sub ? `google:${payload.sub}` : (email || '').trim().toLowerCase();
         signInUser(name, email, payload.picture || '', 'google', googleAccountId);
+        closeAuthModal();
+        closeFirstOrderDiscountPopup();
     }
 
     function loadGoogleScript() {
