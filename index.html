@@ -341,6 +341,35 @@
         .cart-item img { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border); }
         .cart-item-details { flex: 1; text-align: right; }
         .cart-item-details p { margin: 4px 0; color: var(--muted); }
+        .cart-qty-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+        .cart-qty-value {
+            min-width: 32px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .cart-qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fffdf8;
+            color: var(--text);
+            font-size: 1.15em;
+            line-height: 1;
+            cursor: pointer;
+            font-weight: 800;
+        }
+        .cart-qty-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold-deep);
+        }
         .cart-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
         .cart-empty { font-size: 1.1em; color: var(--muted); margin: 20px 0; }
         .add-cart-message { font-size: 1em; color: var(--muted); margin-top: 15px; }
@@ -1789,7 +1818,12 @@
                 <img src="${item.img}" alt="${item.name}">
                 <div class="cart-item-details">
                     <p><strong>${item.name}</strong></p>
-                    <p>₪${item.price} × ${item.quantity}</p>
+                    <p>מחיר יחידה: ₪${item.price}</p>
+                    <div class="cart-qty-controls">
+                        <button type="button" class="cart-qty-btn" onclick="changeCartItemQuantity(${index}, -1)">-</button>
+                        <span class="cart-qty-value">${item.quantity}</span>
+                        <button type="button" class="cart-qty-btn" onclick="changeCartItemQuantity(${index}, 1)">+</button>
+                    </div>
                     ${item.color ? `<p>צבע: ${item.color}</p>` : ''}
                     ${item.details ? `<p>פרטים: ${item.details}</p>` : ''}
                     <p>סה"כ: ₪${item.price * item.quantity}</p>
@@ -1817,6 +1851,19 @@
             updateCartCount();
             renderCart();
         }
+    }
+
+    function changeCartItemQuantity(index, delta) {
+        if (index < 0 || index >= cart.length) return;
+
+        const current = Number(cart[index].quantity) || 1;
+        const next = Math.min(100, Math.max(1, current + delta));
+        if (next === current) return;
+
+        cart[index].quantity = next;
+        saveCart();
+        updateCartCount();
+        renderCart();
     }
 
     function filterProducts() {
