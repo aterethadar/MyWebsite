@@ -388,6 +388,28 @@
             color: #7a6844;
             font-size: 0.92em;
         }
+        .testimonial-status {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 700;
+            text-align: right;
+            border: 1px solid transparent;
+        }
+        .testimonial-status.success {
+            display: block;
+            color: #0f5132;
+            background: #d1e7dd;
+            border-color: #badbcc;
+        }
+        .testimonial-status.error {
+            display: block;
+            color: #842029;
+            background: #f8d7da;
+            border-color: #f5c2c7;
+        }
         .rating-field { text-align: right; margin: 15px 0 5px; }
         .rating-field label { display: block; margin-bottom: 8px; font-weight: bold; color: #5a4520; }
         .rating-field select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1em; background: #fffdf8; color: var(--text); }
@@ -1082,6 +1104,7 @@
         <input type="file" id="testImage" accept="image/*">
         <p class="testimonial-image-note">ניתן לצרף תמונה אחת. אם לא תצורף תמונה, ההמלצה תפורסם בלי תמונת לקוח.</p>
         <button type="button" class="btn-send" onclick="submitTestimonialForApproval()">שלח לאישור</button>
+        <p id="testimonialStatusMessage" class="testimonial-status" aria-live="polite"></p>
     </form>
 </div>
 
@@ -1917,6 +1940,26 @@
         });
     }
 
+    function setTestimonialStatus(message, type = '') {
+        const status = document.getElementById('testimonialStatusMessage');
+        if (!status) return;
+
+        status.textContent = message || '';
+        status.classList.remove('success', 'error');
+
+        if (!message) {
+            status.style.display = 'none';
+            return;
+        }
+
+        if (type === 'success' || type === 'error') {
+            status.classList.add(type);
+            return;
+        }
+
+        status.style.display = 'block';
+    }
+
     async function submitTestimonialForApproval() {
         const name = document.getElementById('testName').value.trim();
         const content = document.getElementById('testContent').value.trim();
@@ -1924,13 +1967,15 @@
         const imageInput = document.getElementById('testImage');
         const imageFile = imageInput && imageInput.files ? imageInput.files[0] : null;
 
+        setTestimonialStatus('');
+
         if (!name || !content || !rating) {
-            alert('אנא מלאו שם, תוכן ודירוג כוכבים.');
+            setTestimonialStatus('אנא מלאו שם, תוכן ודירוג כוכבים.', 'error');
             return;
         }
 
         if (imageFile && !imageFile.type.startsWith('image/')) {
-            alert('ניתן להעלות רק קובץ תמונה.');
+            setTestimonialStatus('ניתן להעלות רק קובץ תמונה.', 'error');
             return;
         }
 
@@ -1939,7 +1984,7 @@
             try {
                 imageData = await readImageAsDataUrl(imageFile);
             } catch (error) {
-                alert('לא הצלחנו לקרוא את התמונה. נסו שוב עם קובץ אחר.');
+                setTestimonialStatus('לא הצלחנו לקרוא את התמונה. נסו שוב עם קובץ אחר.', 'error');
                 return;
             }
         }
@@ -1968,9 +2013,9 @@
             }
 
             document.getElementById('testimonialForm').reset();
-            alert('ההמלצה נשלחה לאישור. לאחר אישור היא תופיע באתר.');
+            setTestimonialStatus('ההמלצה נשלחה לאישור. לאחר אישור היא תופיע באתר.', 'success');
         } catch (error) {
-            alert('לא הצלחנו לשלוח את ההמלצה לאישור. נסו שוב בעוד כמה דקות.');
+            setTestimonialStatus('לא הצלחנו לשלוח את ההמלצה לאישור. נסו שוב בעוד כמה דקות.', 'error');
         }
     }
 
