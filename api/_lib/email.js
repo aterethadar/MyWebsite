@@ -40,6 +40,40 @@ async function sendModerationEmail({ toEmail, businessName, customerName, rating
     }
 }
 
+async function sendAuthCodeEmail({ toEmail, code }) {
+    const resendApiKey = requireEnv('RESEND_API_KEY');
+    const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
+    const subject = 'קוד אימות חד-פעמי לאתר עטרת הדר';
+    const html = [
+        '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937">',
+        '<h2 style="margin:0 0 14px">קוד אימות חד-פעמי</h2>',
+        `<p style="margin:0 0 12px">הקוד שלך להתחברות לאתר עטרת הדר הוא:</p>`,
+        `<p style="margin:0 0 18px;font-size:24px;font-weight:700;letter-spacing:0.15em;">${escapeHtml(code)}</p>`,
+        '<p style="margin:0 0 12px">הקוד תקף לשימוש אחד בלבד ופט כמה דקות בלבד.</p>',
+        '<p style="margin:16px 0 0;font-size:13px;color:#6b7280">אם לא ביקשת התחברות, אפשר להתעלם מההודעה.</p>',
+        '</div>'
+    ].join('');
+
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            from: fromEmail,
+            to: [toEmail],
+            subject,
+            html
+        })
+    });
+
+    if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`email-send-failed:${response.status}:${err}`);
+    }
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, '&amp;')
@@ -50,5 +84,6 @@ function escapeHtml(value) {
 }
 
 module.exports = {
-    sendModerationEmail
+    sendModerationEmail,
+    sendAuthCodeEmail
 };

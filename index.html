@@ -834,6 +834,51 @@
             margin-top: 18px;
         }
         .guest-button:hover { background: rgba(184, 139, 45, 0.12); }
+        .auth-split {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 18px;
+            align-items: start;
+            margin-top: 18px;
+        }
+        .auth-section {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(184, 139, 45, 0.18);
+            border-radius: 18px;
+            padding: 18px;
+        }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            color: var(--gold);
+            font-weight: 700;
+        }
+        .auth-section input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(184, 139, 45, 0.3);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 0.95em;
+        }
+        .auth-section input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        .auth-section button.auth-button {
+            width: 100%;
+            margin-top: 12px;
+        }
+        .auth-status {
+            margin-top: 12px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .auth-status.success { color: #8ed081; }
+        .auth-status.error { color: #f29b9b; }
     </style>
 </head>
 <body>
@@ -864,9 +909,26 @@
 <div id="authModal" class="auth-modal" onclick="if(event.target===this) closeAuthModal()">
     <div class="auth-modal-content">
         <span class="close-popup" onclick="closeAuthModal()">&times;</span>
-        <h2>התחברות עם Google</h2>
-        <div id="googleSignInButton" class="google-signin-button" style="margin-top:16px;"></div>
-        <p style="margin-top:12px; font-size:0.95em; color:#6b5b41;">ההתחברות מתבצעת באמצעות חשבון Google בלבד.</p>
+        <h2>התחברות לאתר</h2>
+        <div class="auth-split">
+            <div class="auth-section">
+                <h3 style="margin:0 0 8px;">התחברות עם Google</h3>
+                <div id="googleSignInButton" class="google-signin-button" style="margin-top:12px;"></div>
+                <p style="margin-top:12px; font-size:0.95em; color:#6b5b41;">התחברו במהירות עם חשבון Google.</p>
+            </div>
+            <div class="auth-divider"><span>או</span></div>
+            <div class="auth-section">
+                <h3 style="margin:0 0 8px;">התחברות עם אימייל</h3>
+                <input id="emailLoginInput" type="email" placeholder="כתובת אימייל" autocomplete="email" />
+                <button type="button" class="auth-button" onclick="requestEmailCode()">שלח קוד אימות</button>
+                <div id="emailCodeSection" style="display:none; margin-top:12px;">
+                    <input id="emailLoginCodeInput" type="text" placeholder="הקלד קוד אימות" maxlength="6" autocomplete="one-time-code" />
+                    <button type="button" class="auth-button" onclick="verifyEmailCode()">אמת קוד</button>
+                </div>
+                <p id="emailLoginHelper" class="auth-status" style="color:#6b5b41;">הקוד תקף 10 דקות וחד-פעמי.</p>
+                <p id="emailLoginStatus" class="auth-status"></p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1213,9 +1275,13 @@
     const FIRST_ORDER_POPUP_DELAY_MS = 2000;
     const CART_VERSION_KEY = 'etrat_hadar_cart_version';
     const CART_VERSION = '1';
+    const EMAIL_AUTH_STATE_KEY = 'etrat_hadar_email_auth_state';
+    const EMAIL_AUTH_CODE_EXPIRY_MS = 10 * 60 * 1000;
+    const EMAIL_AUTH_CODE_LENGTH = 6;
     let currentUser = null;
     let cart = [];
     let pendingProduct = null;
+    let emailAuthState = null;
 
     function loadStoredAuth() {
         const savedUser = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null');
@@ -1223,6 +1289,7 @@
             if (!savedUser.provider) savedUser.provider = 'manual';
             currentUser = savedUser;
         }
+        emailAuthState = loadStoredEmailAuthState();
     }
 
     function saveCurrentUser() {
@@ -1281,6 +1348,7 @@
 
     function openAuthModal() {
         document.getElementById('authModal').style.display = 'flex';
+        renderEmailAuthSection();
     }
 
     function closeAuthModal() {
@@ -1355,6 +1423,138 @@
         saveCurrentUser();
         renderAuthState();
         closeAuthModal();
+    }
+
+    function loadStoredEmailAuthState() {
+        const raw = localStorage.getItem(EMAIL_AUTH_STATE_KEY);
+        if (!raw) return null;
+        try {
+            const state = JSON.parse(raw);
+            if (!state.email || !state.code || !state.expiresAt) return null;
+            return state;
+        } catch {
+            return null;
+        }
+    }
+
+    function saveEmailAuthState(state) {
+        localStorage.setItem(EMAIL_AUTH_STATE_KEY, JSON.stringify(state));
+    }
+
+    function clearEmailAuthState() {
+        emailAuthState = null;
+        localStorage.removeItem(EMAIL_AUTH_STATE_KEY);
+        renderEmailAuthSection();
+    }
+
+    function generateEmailCode() {
+        return String(Math.floor(100000 + Math.random() * 900000));
+    }
+
+    function isValidEmail(email) {
+        return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function renderEmailAuthSection() {
+        const section = document.getElementById('emailCodeSection');
+        const emailInput = document.getElementById('emailLoginInput');
+        const helper = document.getElementById('emailLoginHelper');
+        const status = document.getElementById('emailLoginStatus');
+        if (!section || !emailInput || !helper || !status) return;
+
+        if (emailAuthState && emailAuthState.email) {
+            section.style.display = 'block';
+            emailInput.value = emailAuthState.email;
+            const remainingMs = emailAuthState.expiresAt - Date.now();
+            if (remainingMs <= 0) {
+                helper.textContent = 'הקוד פג. שלח קוד חדש.';
+            } else {
+                const minutes = Math.ceil(remainingMs / 60000);
+                helper.textContent = `קוד חד-פעמי נשלח ל${emailAuthState.email}. תקף עוד ${minutes} דקות.`;
+            }
+            status.textContent = '';
+            status.className = 'auth-status';
+        } else {
+            section.style.display = 'none';
+            helper.textContent = 'הקוד תקף 10 דקות וחד-פעמי.';
+            emailInput.value = '';
+            status.textContent = '';
+            status.className = 'auth-status';
+        }
+    }
+
+    function setEmailLoginStatus(message, type = '') {
+        const status = document.getElementById('emailLoginStatus');
+        if (!status) return;
+        status.textContent = message || '';
+        status.className = type ? `auth-status ${type}` : 'auth-status';
+    }
+
+    async function requestEmailCode() {
+        const emailInput = document.getElementById('emailLoginInput');
+        if (!emailInput) return;
+        const email = emailInput.value.trim().toLowerCase();
+        if (!isValidEmail(email)) {
+            setEmailLoginStatus('נא להזין כתובת אימייל תקינה.', 'error');
+            return;
+        }
+
+        const code = generateEmailCode();
+        emailAuthState = {
+            email,
+            code,
+            expiresAt: Date.now() + EMAIL_AUTH_CODE_EXPIRY_MS
+        };
+        saveEmailAuthState(emailAuthState);
+        renderEmailAuthSection();
+        setEmailLoginStatus('נשלח קוד אימות לאימייל. אנא בדוק את תיבת הדואר.', 'success');
+
+        try {
+            const response = await fetch('/api/send-email-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email, code })
+            });
+
+            if (!response.ok) {
+                throw new Error('send-failed');
+            }
+        } catch (error) {
+            clearEmailAuthState();
+            setEmailLoginStatus('לא הצלחנו לשלוח את הקוד. נסה שוב בעוד רגע.', 'error');
+        }
+    }
+
+    function verifyEmailCode() {
+        const codeInput = document.getElementById('emailLoginCodeInput');
+        if (!codeInput) return;
+        const enteredCode = codeInput.value.trim();
+
+        if (!emailAuthState || !emailAuthState.code || !emailAuthState.email) {
+            setEmailLoginStatus('אין קוד פעיל. שלח קוד אימות קודם.', 'error');
+            return;
+        }
+
+        if (Date.now() > emailAuthState.expiresAt) {
+            clearEmailAuthState();
+            setEmailLoginStatus('הקוד פג. שלח קוד חדש.', 'error');
+            return;
+        }
+
+        if (enteredCode !== emailAuthState.code) {
+            setEmailLoginStatus('הקוד אינו תואם. בדוק שוב או שלח קוד חדש.', 'error');
+            return;
+        }
+
+        const displayName = emailAuthState.email.split('@')[0];
+        signInUser(displayName, emailAuthState.email, '', 'email', `email:${emailAuthState.email}`);
+        clearEmailAuthState();
+        closeAuthModal();
+        showToast('ההתחברות בוצעה בהצלחה באמצעות אימייל.');
+        closeFirstOrderDiscountPopup();
     }
 
     function getCurrentUserEmailKey() {
@@ -2164,6 +2364,7 @@
         handlePageFromLocation();
         loadApprovedTestimonials();
 
+        renderEmailAuthSection();
         showPromoPopupOnce();
         showFirstOrderDiscountPopupOnce();
         showParaffinOfferPopupOnce();
