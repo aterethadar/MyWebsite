@@ -920,12 +920,11 @@
             <div class="auth-section">
                 <h3 style="margin:0 0 8px;">התחברות עם אימייל</h3>
                 <input id="emailLoginInput" type="email" placeholder="כתובת אימייל" autocomplete="email" />
-                <button type="button" class="auth-button" onclick="requestEmailCode()">שלח קוד אימות</button>
+                <p id="emailLoginHelper" class="auth-status" style="color:#6b5b41;">הקוד ישלח אוטומטית לאימייל.</p>
                 <div id="emailCodeSection" style="display:none; margin-top:12px;">
-                    <input id="emailLoginCodeInput" type="text" placeholder="הקלד קוד אימות" maxlength="6" autocomplete="one-time-code" />
-                    <button type="button" class="auth-button" onclick="verifyEmailCode()">אמת קוד</button>
+                    <input id="emailLoginCodeInput" type="text" placeholder="הקוד יופיע כאן..." maxlength="6" autocomplete="one-time-code" inputmode="numeric" />
+                    <p id="emailLoginCodeSent" class="auth-status" style="color:#6b5b41; margin-top:8px;"></p>
                 </div>
-                <p id="emailLoginHelper" class="auth-status" style="color:#6b5b41;">הקוד תקף 10 דקות וחד-פעמי.</p>
                 <p id="emailLoginStatus" class="auth-status"></p>
             </div>
         </div>
@@ -1495,7 +1494,6 @@
         if (!emailInput) return;
         const email = emailInput.value.trim().toLowerCase();
         if (!isValidEmail(email)) {
-            setEmailLoginStatus('נא להזין כתובת אימייל תקינה.', 'error');
             return;
         }
 
@@ -1507,7 +1505,7 @@
         };
         saveEmailAuthState(emailAuthState);
         renderEmailAuthSection();
-        setEmailLoginStatus('נשלח קוד אימות לאימייל. אנא בדוק את תיבת הדואר.', 'success');
+        setEmailLoginStatus('', '');
 
         try {
             const response = await fetch('/api/send-email-code', {
@@ -1522,9 +1520,22 @@
             if (!response.ok) {
                 throw new Error('send-failed');
             }
+            const codeSentEl = document.getElementById('emailLoginCodeSent');
+            if (codeSentEl) {
+                codeSentEl.textContent = `קוד נשלח ל${email}. תקף 10 דקות.`;
+                codeSentEl.className = 'auth-status success';
+            }
         } catch (error) {
             clearEmailAuthState();
             setEmailLoginStatus('לא הצלחנו לשלוח את הקוד. נסה שוב בעוד רגע.', 'error');
+        }
+    }
+
+    function autoVerifyOnCodeComplete() {
+        const codeInput = document.getElementById('emailLoginCodeInput');
+        if (!codeInput) return;
+        if (codeInput.value.length === 6 && /^\d{6}$/.test(codeInput.value)) {
+            setTimeout(() => verifyEmailCode(), 100);
         }
     }
 
@@ -2313,6 +2324,23 @@
         }
     }
 
+    function initEmailAuthEvents() {
+        const emailInput = document.getElementById('emailLoginInput');
+        const codeInput = document.getElementById('emailLoginCodeInput');
+        if (emailInput) {
+            emailInput.addEventListener('blur', requestEmailCode);
+            emailInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    requestEmailCode();
+                }
+            });
+        }
+        if (codeInput) {
+            codeInput.addEventListener('input', autoVerifyOnCodeComplete);
+        }
+    }
+
     function copyContact(value, message) {
         const copyValue = () => {
             if (!navigator.clipboard) {
@@ -2365,6 +2393,7 @@
         loadApprovedTestimonials();
 
         renderEmailAuthSection();
+        initEmailAuthEvents();
         showPromoPopupOnce();
         showFirstOrderDiscountPopupOnce();
         showParaffinOfferPopupOnce();
