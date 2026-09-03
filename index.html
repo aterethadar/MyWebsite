@@ -479,6 +479,12 @@
             color: #7a6844;
             background: rgba(255, 253, 248, 0.75);
         }
+        .testimonial-add-button { display: block; width: min(100%, 320px); margin: 0 auto 28px; padding: 14px 22px; border: 0; border-radius: 8px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%); color: #fffdf8; font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 8px 18px rgba(46, 32, 10, 0.16); }
+        .testimonial-popup-content { width: min(94vw, 680px); max-height: calc(100dvh - 24px); overflow-y: auto; text-align: right; padding: 28px 30px 30px; }
+        .testimonial-popup-content h2 { display: block; margin: 0 0 8px; text-align: center; }
+        .testimonial-popup-content > p { text-align: center; }
+        .testimonial-popup-content form { max-width: none; padding: 0; background: transparent; box-shadow: none; border: 0; }
+        .testimonial-popup-content .testimonial-email-note { margin-top: 8px; }
         .testimonial-image-label {
             display: block;
             margin: 14px 0 6px;
@@ -1546,30 +1552,37 @@
     <h2>מה הלקוחות אומרים</h2>
     <p id="testimonialsEmptyState" class="testimonial-empty">עדיין אין המלצות באתר. נשמח שתהיו הראשונים לשתף חוויה.</p>
     <div id="testimonials-list"></div>
-    <hr style="margin: 40px 0; border: 0; border-top: 1px solid var(--gold);">
-    <h3>הוסיפו המלצה</h3>
-    <form id="testimonialForm">
-        <input type="text" id="testName" placeholder="שמך" required>
-        <p class="testimonial-email-note">כתובת האימייל משמשת רק ליצירת קשר ואינה מתפרסמת באתר.</p>
-        <input type="email" id="testEmail" placeholder="כתובת אימייל" autocomplete="email" required>
-        <textarea id="testContent" rows="4" placeholder="כתוב את ההמלצה שלך כאן..." required></textarea>
-        <div class="rating-field">
-            <label for="testRating">בחר דירוג בכוכבים:</label>
-            <select id="testRating" required>
-                <option value="">בחר דירוג</option>
-                <option value="5">★★★★★</option>
-                <option value="4">★★★★☆</option>
-                <option value="3">★★★☆☆</option>
-                <option value="2">★★☆☆☆</option>
-                <option value="1">★☆☆☆☆</option>
-            </select>
-        </div>
-        <label for="testImage" class="testimonial-image-label">תמונה להמלצה (אופציונלי)</label>
-        <input type="file" id="testImage" accept="image/*">
-        <p class="testimonial-image-note">ניתן לצרף תמונה אחת. אם לא תצורף תמונה, ההמלצה תפורסם בלי תמונת לקוח.</p>
-        <button type="button" class="btn-send" onclick="submitTestimonialForApproval()">שלח לאישור</button>
-        <p id="testimonialStatusMessage" class="testimonial-status" aria-live="polite"></p>
-    </form>
+    <button type="button" class="testimonial-add-button" onclick="openTestimonialPopup()">הוספת המלצה</button>
+</div>
+
+<div id="testimonialPopup" class="popup-overlay" onclick="if(event.target===this) closeTestimonialPopup()">
+    <div class="popup-content testimonial-popup-content">
+        <span class="close-popup" onclick="closeTestimonialPopup()">&times;</span>
+        <h2>הוספת המלצה</h2>
+        <p>נשמח לשמוע איך הייתה החוויה שלכם בעטרת הדר.</p>
+        <form id="testimonialForm">
+            <input type="text" id="testName" placeholder="שמך" required>
+            <p class="testimonial-email-note">כתובת האימייל משמשת רק ליצירת קשר ואינה מתפרסמת באתר.</p>
+            <input type="email" id="testEmail" placeholder="כתובת אימייל" autocomplete="email" required>
+            <textarea id="testContent" rows="4" placeholder="כתבו את ההמלצה שלכם כאן..." required></textarea>
+            <div class="rating-field">
+                <label for="testRating">בחרו דירוג בכוכבים:</label>
+                <select id="testRating" required>
+                    <option value="">בחרו דירוג</option>
+                    <option value="5">★★★★★</option>
+                    <option value="4">★★★★☆</option>
+                    <option value="3">★★★☆☆</option>
+                    <option value="2">★★☆☆☆</option>
+                    <option value="1">★☆☆☆☆</option>
+                </select>
+            </div>
+            <label for="testImage" class="testimonial-image-label">תמונה להמלצה (אופציונלי)</label>
+            <input type="file" id="testImage" accept="image/*">
+            <p class="testimonial-image-note">ניתן לצרף תמונה אחת. אם לא תצורף תמונה, ההמלצה תפורסם בלי תמונת לקוח.</p>
+            <button type="button" class="btn-send" onclick="submitTestimonialForApproval()">שלחו לאישור</button>
+            <p id="testimonialStatusMessage" class="testimonial-status" aria-live="polite"></p>
+        </form>
+    </div>
 </div>
 
 <div id="contact" class="page">
@@ -2995,6 +3008,14 @@
         const list = document.getElementById('testimonials-list');
         if (!emptyState || !list) return;
         emptyState.style.display = list.children.length > 0 ? 'none' : 'block';
+    }
+
+    function openTestimonialPopup() {
+        document.getElementById('testimonialPopup').style.display = 'flex';
+    }
+
+    function closeTestimonialPopup() {
+        document.getElementById('testimonialPopup').style.display = 'none';
     }
 
     function renderTestimonialCard(entry, prepend = true) {
