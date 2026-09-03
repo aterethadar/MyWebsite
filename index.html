@@ -1262,10 +1262,11 @@
                 <input type="text" id="newsletterFirstName" placeholder="שם פרטי" autocomplete="given-name" aria-label="שם פרטי">
                 <input type="text" id="newsletterLastName" placeholder="שם משפחה" autocomplete="family-name" aria-label="שם משפחה">
                 <input type="email" id="newsletterEmail" placeholder="כתובת אימייל" autocomplete="email" aria-label="כתובת אימייל">
+                <input type="tel" id="newsletterPhone" placeholder="מספר סלולרי" autocomplete="tel" aria-label="מספר סלולרי">
             </div>
             <button type="button" class="first-order-google newsletter-submit" onclick="submitNewsletterSignup()">הירשמו עכשיו</button>
             <p id="newsletterSubmitStatus" class="newsletter-submit-status" aria-live="polite"></p>
-            <div class="fc-form form_346116 type-vertical rtl" data-form-id="346116-68d569b5-f24b-472f-cce5-095f89ef4a7d-52136"><div class="fc_container type-vertical field-beside" style="direction: rtl;" data-action="https://panel.sendmsg.co.il/AddUserFromSite.aspx" data-method="post" data-target="stay_iframe" data-lang="heb" data-width="294" data-height="81"><div name="header1f5580b0-249d-11e7-bee4-ba6d5180dd24" style="font-size:25px;text-align:center;font-family:Arial;">כותרת לטופס</div><div id="containingDivb510b76" cellspacing="0" class="table fc-div-struct"><div class="tbody"><div class="tr fc-hidden-row"><div class="td fc-cell-text"><span class="fc-text"><input type="hidden" name="MLID" value="345739" data-fc-id="MLID">דואר אלקטרוני:*</span></div><div class="td fc-cell-field"><input type="email" id="email" name="eMail" class="" data-fc-id="email" data-fc-must-fill="true"></div></div><div class="tr"><div class="td fc-cell-text"><span class="fc-text">סלולרי:</span><span class="fc-must-star">*</span></div><div class="td fc-cell-field"><input type="tel" id="cellphone" name="cellphone" class="" data-fc-id="cellphone" data-fc-must-fill="true"></div></div><div class="tr fc-button-row fc-hidden-row fc-colspan"><div colspan="2" style="text-align:center" class="td fc-cell-text"><input style="display:none" type="hidden" class="MustField" name="form" value="346116__ab83f415-3ded-477e-be8a-f200b4287654" data-fc-id="form"><input class="MustField" type="button" onclick="return submitForm(this);" value=""></div></div></div></div></div></div><link href="//app.creaditor.com/formCreator/assets/fc-basics.min.css?v=1.0.18" rel="stylesheet"><script type="text/javascript" src="//app.creaditor.com/formCreator/assets/fc-basics.min.js?v=1.0.18"></script><link data-id="346116" href="https://panel.sendmsg.co.il/userfiles/site52136/FormCreate/fc_346116.css" rel="stylesheet"></div>
+            <div class="fc-form form_346116 type-vertical rtl" data-form-id="346116-04373dc5-4e10-65c0-cbb9-ddd172ba6cb2-52136"><div class="fc_container type-vertical field-beside" style="direction: rtl;" data-action="https://panel.sendmsg.co.il/AddUserFromSite.aspx" data-method="post" data-target="stay_iframe" data-lang="heb" data-width="294" data-height="81"><div id="containingDivb510b76" cellspacing="0" class="table fc-div-struct"><div class="tbody"><div class="tr fc-hidden-row"><div class="td fc-cell-text"><span class="fc-text"><input type="hidden" name="MLID" value="345739" data-fc-id="MLID">דואר אלקטרוני:*</span></div><div class="td fc-cell-field"><input type="email" id="email" name="eMail" class="" data-fc-id="email" data-fc-must-fill="true"></div></div><div class="tr"><div class="td fc-cell-text"><span class="fc-text">סלולרי:</span><span class="fc-must-star">*</span></div><div class="td fc-cell-field"><input type="tel" id="cellphone" name="cellphone" class="" data-fc-id="cellphone" data-fc-must-fill="true"></div></div><div class="tr fc-button-row fc-hidden-row fc-colspan"><div colspan="2" style="text-align:center" class="td fc-cell-text"><input style="display:none" type="hidden" class="MustField" name="form" value="346116__ab83f415-3ded-477e-be8a-f200b4287654" data-fc-id="form"><input class="MustField" type="button" onclick="return submitForm(this);" value=""></div></div></div></div></div><link href="//app.creaditor.com/formCreator/assets/fc-basics.min.css?v=1.0.18" rel="stylesheet"><script type="text/javascript" src="//app.creaditor.com/formCreator/assets/fc-basics.min.js?v=1.0.18"></script><link data-id="346116" href="https://panel.sendmsg.co.il/userfiles/site52136/FormCreate/fc_346116.css" rel="stylesheet"></div>
         </div>
         <button type="button" class="first-order-later" onclick="closeFirstOrderDiscountPopup()">לא עכשיו</button>
     </div>
@@ -2152,8 +2153,9 @@
         const status = document.getElementById('newsletterSubmitStatus');
         const setStatus = message => { if (status) status.textContent = message; };
 
-        if (!firstName || !lastName || !email) {
-            setStatus('נא למלא שם פרטי, שם משפחה וכתובת אימייל.');
+        const phone = document.getElementById('newsletterPhone').value.trim();
+        if (!firstName || !lastName || !email || !phone) {
+            setStatus('נא למלא שם פרטי, שם משפחה, כתובת אימייל ומספר סלולרי.');
             return;
         }
         if (!isValidEmail(email)) {
@@ -2168,11 +2170,10 @@
             return;
         }
 
-        const emailField = embeddedFields.find(field => field.type === 'email' || /mail|אימייל/i.test(`${field.id} ${field.name} ${field.placeholder}`));
-        const textFields = embeddedFields.filter(field => field !== emailField && field.type !== 'hidden');
-        if (textFields[0]) textFields[0].value = firstName;
-        if (textFields[1]) textFields[1].value = lastName;
+        const emailField = embeddedForm.querySelector('input[name="eMail"]');
+        const phoneField = embeddedForm.querySelector('input[name="cellphone"]');
         if (emailField) emailField.value = email;
+        if (phoneField) phoneField.value = phone;
 
         const submitButton = embeddedForm.querySelector('.fc_button, button[type="button"], button[type="submit"], input[type="submit"]');
         if (!submitButton) {
