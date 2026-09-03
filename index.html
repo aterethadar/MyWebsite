@@ -10,7 +10,7 @@
     <meta name="author" content="עטרת הדר">
     <meta name="theme-color" content="#17120d">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://https://aterethadar.vercel.app//">
+    <link rel="canonical" href="https://my-website-vybe.vercel.app/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="he_IL">
     <meta property="og:site_name" content="עטרת הדר - עטרת של יוקרה. חותם של הדר.">
@@ -2610,7 +2610,7 @@
         ensureProductQuantityOptions();
 
         document.getElementById('productOptionsTitle').textContent = name;
-        document.getElementById('productOptionsPrice').textContent = `₪${price}`;
+        document.getElementById('productOptionsPrice').textContent = `מחיר ליחידה: ₪${price} | סה"כ: ₪${price}`;
         sizeLabel.style.display = isCupProduct ? 'block' : 'none';
         sizeSelect.style.display = isCupProduct ? 'block' : 'none';
         sizeSelect.value = '';
@@ -2641,7 +2641,21 @@
         if (quantitySelect) {
             quantitySelect.value = '1';
         }
+        [sizeSelect, colorSelect, variantSelect, coverVariantSelect, quantitySelect].forEach(select => {
+            select.onchange = updateProductOptionsTotal;
+        });
         document.getElementById('productOptionsPopup').style.display = 'flex';
+    }
+
+    function updateProductOptionsTotal() {
+        if (!pendingProduct) return;
+        const quantity = Number(document.getElementById('productQuantity').value || '1');
+        const size = document.getElementById('productSize').value;
+        const variant = document.getElementById('productVariant').value;
+        let unitPrice = pendingProduct.price;
+        if (pendingProduct.name.includes('כוסיות') && size) unitPrice = size === 'בינוני' ? 30 : size === 'גדול' ? 40 : 20;
+        if (pendingProduct.name.includes('קשית') && variant) unitPrice = variant === 'פתילה' ? 10 : 3;
+        document.getElementById('productOptionsPrice').textContent = `מחיר ליחידה: ₪${unitPrice} | סה"כ: ₪${unitPrice * quantity}`;
     }
 
     function closeProductOptionsPopup() {
