@@ -4,16 +4,21 @@ const crypto = require('crypto');
 const { getOptionalEnv, requireEnv } = require('../_lib/config');
 const { json, methodNotAllowed, readJsonBody } = require('../_lib/http');
 const { supabaseRequest } = require('../_lib/supabase');
-const { sendModerationEmail } = require('../_lib/email');
+const { sendModerationEmail, sendTestimonialThankYouEmail } = require('../_lib/email');
 
 function validatePayload(payload) {
     const name = typeof payload.name === 'string' ? payload.name.trim() : '';
+    const email = typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : '';
     const content = typeof payload.content === 'string' ? payload.content.trim() : '';
     const rating = Number(payload.rating);
     const imageData = typeof payload.imageData === 'string' ? payload.imageData.trim() : '';
 
-    if (!name || !content || Number.isNaN(rating)) {
+    if (!name || !email || !content || Number.isNaN(rating)) {
         throw new Error('missing-required-fields');
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        throw new Error('invalid-email');
     }
 
     if (rating < 1 || rating > 5) {
@@ -32,7 +37,7 @@ function validatePayload(payload) {
         throw new Error('image-too-large');
     }
 
-    return { name, content, rating, imageData };
+    return { name, email, content, rating, imageData };
 }
 
 function createToken() {
@@ -47,7 +52,7 @@ module.exports = async function handler(req, res) {
 
     try {
         const payload = await readJsonBody(req);
-        const { name, content, rating, imageData } = validatePayload(payload);
+        const { name, email, content, rating, imageData } = validatePayload(payload);
 
         const approveToken = createToken();
         const rejectToken = createToken();
@@ -84,11 +89,21 @@ module.exports = async function handler(req, res) {
             toEmail: businessEmail,
             businessName,
             customerName: name,
+            customerEmail: email,
             rating,
             content,
             approveUrl,
             rejectUrl
         });
+
+        try {
+            await sendTestimonialThankYouEmail({
+                toEmail: email,
+                customerName: name
+            });
+        } catch (error) {
+            console.error('testimonial-thank-you-email-failed', error);
+        }
 
         json(res, 200, {
             ok: true,
