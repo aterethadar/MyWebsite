@@ -2,7 +2,7 @@
 
 const { getOptionalEnv, requireEnv } = require('./config');
 
-async function sendModerationEmail({ toEmail, businessName, customerName, rating, content, approveUrl, rejectUrl }) {
+async function sendModerationEmail({ toEmail, businessName, customerName, customerEmail, rating, content, approveUrl, rejectUrl }) {
     const resendApiKey = requireEnv('RESEND_API_KEY');
     const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
 
@@ -11,6 +11,7 @@ async function sendModerationEmail({ toEmail, businessName, customerName, rating
         '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937">',
         `<h2 style="margin:0 0 12px">המלצה חדשה ממתינה לאישור</h2>`,
         `<p style="margin:0 0 8px"><strong>שם הלקוח:</strong> ${escapeHtml(customerName)}</p>`,
+        `<p style="margin:0 0 8px"><strong>אימייל הלקוח:</strong> ${escapeHtml(customerEmail)}</p>`,
         `<p style="margin:0 0 8px"><strong>דירוג:</strong> ${Number(rating)} / 5</p>`,
         `<p style="margin:0 0 16px"><strong>תוכן:</strong><br>${escapeHtml(content)}</p>`,
         `<p style="margin:0 0 12px">בחרו פעולה:</p>`,
@@ -74,6 +75,68 @@ async function sendAuthCodeEmail({ toEmail, code }) {
     }
 }
 
+async function sendTestimonialThankYouEmail({ toEmail, customerName }) {
+    const resendApiKey = requireEnv('RESEND_API_KEY');
+    const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
+    const subject = 'תודה רבה על ההמלצה שלך!';
+    const html = [
+        '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.8;color:#2f261b;background:#f7f1e7;padding:28px">',
+        '<div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e7d9bb;border-radius:12px;padding:28px">',
+        `<h2 style="margin:0 0 18px;color:#8f671b">תודה רבה, ${escapeHtml(customerName)}!</h2>`,
+        '<p style="margin:0 0 12px">תודה ששיתפת אותנו בחוות הדעת שלך. אנחנו מעריכים את הזמן שהקדשת ואת האמון שנתת בנו.</p>',
+        '<p style="margin:0 0 12px">ההמלצה התקבלה ונשלחה לבדיקה קצרה לפני פרסום באתר. לאחר האישור היא תוכל לעזור ללקוחות נוספים להכיר את עטרת הדר.</p>',
+        '<p style="margin:20px 0 0;color:#6b5b41">בברכה,<br><strong>צוות עטרת הדר</strong></p>',
+        '</div></div>'
+    ].join('');
+
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: fromEmail, to: [toEmail], subject, html })
+    });
+
+    if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`email-send-failed:${response.status}:${err}`);
+    }
+}
+
+async function sendOrderEmails({ businessEmail, businessName, orderId, name, email, phone, address, deliveryMethod, deliveryNotes, items }) {
+    const resendApiKey = requireEnv('RESEND_API_KEY');
+    const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
+    const deliveryText = deliveryMethod === 'delivery' ? 'משלוח עד הבית' : 'איסוף עצמי ממודיעין עילית';
+    const itemsHtml = items.map(item => `<li>${escapeHtml(item.name)} × ${Number(item.quantity)} - ₪${Number(item.total)}</li>`).join('');
+    const customerHtml = [
+        '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.8;color:#2f261b;background:#f7f1e7;padding:28px">',
+        '<div style="max-width:620px;margin:0 auto;background:#fffdf8;border:1px solid #e7d9bb;border-radius:12px;padding:28px">',
+        `<h2 style="margin:0 0 18px;color:#8f671b">תודה על ההזמנה שלך, ${escapeHtml(name)}!</h2>`,
+        `<p>הזמנה מספר <strong>${escapeHtml(orderId)}</strong> התקבלה ונמצאת בטיפול.</p>`,
+        `<p><strong>אופן קבלה:</strong> ${escapeHtml(deliveryText)}</p><p><strong>כתובת:</strong> ${escapeHtml(address || 'לא נדרשה באיסוף עצמי')}</p>`,
+        `<p><strong>פרטי ההזמנה:</strong></p><ul>${itemsHtml}</ul>`,
+        `<p><strong>הערות:</strong> ${escapeHtml(deliveryNotes || 'אין הערות')}</p>`,
+        '<p style="margin-top:20px;color:#6b5b41">ניצור איתך קשר להשלמת הפרטים ולתיאום האיסוף או המשלוח.<br>תודה שבחרת בעטרת הדר.</p>',
+        '</div></div>'
+    ].join('');
+    const businessHtml = [
+        '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.8;color:#2f261b">',
+        `<h2>הזמנה חדשה ${escapeHtml(orderId)}</h2>`,
+        `<p><strong>שם מלא:</strong> ${escapeHtml(name)}</p><p><strong>אימייל:</strong> ${escapeHtml(email)}</p><p><strong>טלפון:</strong> ${escapeHtml(phone)}</p>`,
+        `<p><strong>אופן קבלה:</strong> ${escapeHtml(deliveryText)}</p><p><strong>כתובת:</strong> ${escapeHtml(address || 'לא נדרשה באיסוף עצמי')}</p><p><strong>הערות:</strong> ${escapeHtml(deliveryNotes || 'אין הערות')}</p>`,
+        `<ul>${itemsHtml}</ul>`,
+        '</div>'
+    ].join('');
+    const send = (toEmail, subject, html) => fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: fromEmail, to: [toEmail], subject, html })
+    });
+    const [businessResponse, customerResponse] = await Promise.all([
+        send(businessEmail, `הזמנה חדשה ${orderId} - ${businessName}`, businessHtml),
+        send(email, 'תודה על ההזמנה שלך בעטרת הדר!', customerHtml)
+    ]);
+    if (!businessResponse.ok || !customerResponse.ok) throw new Error('email-send-failed');
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, '&amp;')
@@ -85,5 +148,7 @@ function escapeHtml(value) {
 
 module.exports = {
     sendModerationEmail,
-    sendAuthCodeEmail
+    sendAuthCodeEmail,
+    sendTestimonialThankYouEmail,
+    sendOrderEmails
 };
