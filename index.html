@@ -2195,7 +2195,7 @@
         if (popup) popup.style.display = 'flex';
     }
 
-    function submitNewsletterSignup() {
+    async function submitNewsletterSignup() {
         const status = document.getElementById('newsletterSubmitStatus');
         const setStatus = message => { if (status) status.textContent = message; };
         const firstName = document.getElementById('newsletterFirstName').value.trim();
@@ -2228,9 +2228,20 @@
         }
 
         localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
-        setStatus('ההרשמה נשלחת...');
-        submitButton.click();
-        closeFirstOrderDiscountPopup();
+        setStatus('שולחים את ההרשמה וקוד הקופון למייל...');
+        try {
+            const response = await fetch('/api/newsletter/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ name: firstName, email })
+            });
+            if (!response.ok) throw new Error('newsletter-email-failed');
+            submitButton.click();
+            setStatus('נרשמתם בהצלחה. קוד הקופון נשלח אליכם במייל.');
+            setTimeout(closeFirstOrderDiscountPopup, 1200);
+        } catch (error) {
+            setStatus('לא הצלחנו לשלוח את קוד הקופון. נסו שוב בעוד רגע.');
+        }
     }
 
     function triggerGoogleSignIn() {

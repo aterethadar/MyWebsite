@@ -101,6 +101,29 @@ async function sendTestimonialThankYouEmail({ toEmail, customerName }) {
     }
 }
 
+async function sendNewsletterCouponEmail({ toEmail, customerName, couponCode }) {
+    const resendApiKey = requireEnv('RESEND_API_KEY');
+    const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
+    const html = [
+        '<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.8;color:#2f261b;background:#f7f1e7;padding:28px">',
+        '<div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e7d9bb;border-radius:12px;padding:28px">',
+        `<h2 style="margin:0 0 18px;color:#8f671b">תודה שהצטרפתם, ${escapeHtml(customerName)}!</h2>`,
+        '<p style="margin:0 0 14px">קוד הקופון שלכם לקנייה הראשונה:</p>',
+        `<p style="margin:0 0 18px;font-size:28px;font-weight:800;letter-spacing:0.12em;color:#8f671b">${escapeHtml(couponCode)}</p>`,
+        '<p style="margin:0;color:#6b5b41">הקוד מעניק 10% הנחה בקנייה הראשונה באתר.</p>',
+        '</div></div>'
+    ].join('');
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: fromEmail, to: [toEmail], subject: 'קוד הקופון שלך מעטרת הדר', html })
+    });
+    if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`email-send-failed:${response.status}:${err}`);
+    }
+}
+
 async function sendOrderEmails({ businessEmail, businessName, orderId, name, email, phone, address, deliveryMethod, deliveryNotes, items }) {
     const resendApiKey = requireEnv('RESEND_API_KEY');
     const fromEmail = getOptionalEnv('RESEND_FROM_EMAIL', 'onboarding@resend.dev');
@@ -150,5 +173,6 @@ module.exports = {
     sendModerationEmail,
     sendAuthCodeEmail,
     sendTestimonialThankYouEmail,
+    sendNewsletterCouponEmail,
     sendOrderEmails
 };
