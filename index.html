@@ -331,11 +331,6 @@
             color: var(--muted);
             font-size: 0.95em;
         }
-        .featured-product-strip { display: flex; align-items: center; gap: 16px; width: min(100%, 760px); min-height: 116px; margin: 22px auto 10px; padding: 14px 18px; border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 10px; background: rgba(255, 253, 248, 0.82); text-align: right; }
-        .featured-product-strip img { width: 82px; height: 82px; object-fit: contain; flex: 0 0 auto; border-radius: 8px; background: #fffdf8; }
-        .featured-product-strip h3 { margin: 0 0 4px; color: #3b2f1f; }
-        .featured-product-strip p { margin: 0; font-size: 0.95em; }
-        .featured-product-strip button { margin-inline-start: auto; flex: 0 0 auto; }
 
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
         .product-card {
@@ -1350,14 +1345,6 @@
     <h2>החנות שלנו</h2>
     <div class="product-search-note">חפשו מוצר לפי שם, סוג או שימוש.</div>
     <p class="product-search-note">איסוף עצמי ממודיעין עילית ללא עלות. למשלוח עד הבית יש לבחור משלוח, לכתוב כתובת בהערות, ועלות המשלוח תימסר לאחר קבלת הפרטים.</p>
-    <section class="featured-product-strip" aria-live="polite" aria-label="מוצר מומלץ">
-        <img id="featuredProductImage" src="שמן פראפין ח.png" alt="שמן פראפין איכותי">
-        <div>
-            <h3 id="featuredProductName">שמן פראפין איכותי</h3>
-            <p id="featuredProductDescription">שמן להדלקת נרות ומאור.</p>
-        </div>
-        <button id="featuredProductButton" type="button" class="btn-add">לפרטי המוצר</button>
-    </section>
     <div class="products-grid">
         <div class="product-card">
             <img src="דמוי עור על במה.png" alt="סט נרתיקים דמוי עור מתקפל" class="product-image">
@@ -1377,14 +1364,14 @@
         <div class="product-card" data-category="אקססוריז">
             <img src="זכוכית מגדלת.png" alt="זכוכית מגדלת" class="product-image">
             <h3>זכוכית מגדלת</h3>
-            <p class="product-description">זכוכית מגדלת שימושית לקריאה נוחה של טקסטים קטנים.</p>
+            <p class="product-description">זכוכית מגדלת לאתרוג, בהגדלה של ×30.</p>
             <p>₪20</p>
             <button class="btn-add" type="button" onclick="openProductOptions('זכוכית מגדלת', 20, 'זכוכית מגדלת.png')">הוסף לסל</button>
         </div>
         <div class="product-card">
             <img src="שמן פראפין ח.png" alt="שמן פראפין איכותי" class="product-image">
             <h3>שמן פראפין איכותי</h3>
-            <p class="product-description">שמן להדלקת נרות ומאור. אינו קשור לנרתיקי הלולב.</p>
+            <p class="product-description">שמן פראפין איכותי לשבתות, חגים ואירועים.</p>
             <p>₪29</p>
             <button class="btn-add" type="button" onclick="openProductOptions('שמן פראפין איכותי', 29, 'שמן פראפין ח.png')">הוסף לסל</button>
         </div>
@@ -2143,7 +2130,14 @@
     }
 
     function openNewsletterSignup() {
-        requestSequentialPopup('firstOrderDiscountPopup');
+        sequentialPopupPriority.filter(id => id !== 'firstOrderDiscountPopup').forEach(id => {
+            const popup = document.getElementById(id);
+            if (popup) popup.style.display = 'none';
+        });
+        pendingSequentialPopups.delete('firstOrderDiscountPopup');
+        sequentialPopupCooldownUntil = 0;
+        const popup = document.getElementById('firstOrderDiscountPopup');
+        if (popup) popup.style.display = 'flex';
     }
 
     function submitNewsletterSignup() {
@@ -2912,25 +2906,6 @@
         }
     }
 
-    function startFeaturedProductRotation() {
-        const products = [
-            { name: 'שמן פראפין איכותי', description: 'שמן להדלקת נרות ומאור.', img: 'שמן פראפין ח.png', price: 29 },
-            { name: 'זכוכית מגדלת', description: 'זכוכית מגדלת שימושית לקריאה נוחה של טקסטים קטנים.', img: 'זכוכית מגדלת.png', price: 20 },
-            { name: 'נרתיק לולב ואקום / רגיל', description: 'נרתיק להגנה על הלולב, בדגם ואקום או בדגם רגיל.', img: 'לוגו לולב.png', price: 10 }
-        ];
-        let index = 0;
-        const update = () => {
-            const product = products[index];
-            document.getElementById('featuredProductImage').src = product.img;
-            document.getElementById('featuredProductImage').alt = product.name;
-            document.getElementById('featuredProductName').textContent = product.name;
-            document.getElementById('featuredProductDescription').textContent = product.description;
-            document.getElementById('featuredProductButton').onclick = () => openProductOptions(product.name, product.price, product.img);
-            index = (index + 1) % products.length;
-        };
-        update();
-        setInterval(update, 8000);
-    }
 
     function checkoutOrder() {
         if (cart.length === 0) {
@@ -3208,7 +3183,6 @@
         updateCartCount();
         handlePageFromLocation();
         loadApprovedTestimonials();
-        startFeaturedProductRotation();
         updateFoldingCaseStockNotice();
 
         renderEmailAuthSection();
