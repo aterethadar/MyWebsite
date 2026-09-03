@@ -698,7 +698,11 @@
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.45);
         }
-        .newsletter-popup-form .fc-form { display: none !important; }
+        .newsletter-popup-form .fc_container { width: 100%; max-width: 630px; margin: 0 auto; background: transparent; padding: 0; box-shadow: none; }
+        .newsletter-popup-form .fc-row-field { display: grid; grid-template-columns: 90px 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .newsletter-popup-form .fc-cell-text { color: #5a4520; font-weight: 700; text-align: right; }
+        .newsletter-popup-form .fc_input_text { width: 100%; min-height: 44px; margin: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fffdf8; color: var(--text); font: inherit; }
+        .newsletter-popup-form .fc-button-row { display: none; }
         .newsletter-fields { display: grid; gap: 10px; margin-bottom: 18px; }
         .newsletter-fields input { width: 100%; min-height: 44px; margin: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fffdf8; color: var(--text); font: inherit; }
         .newsletter-popup-form .fc_container .tr:not(.fc-hidden-row) { display: none; }
@@ -1268,7 +1272,27 @@
             </div>
             <button type="button" class="first-order-google newsletter-submit" onclick="submitNewsletterSignup()">הירשמו עכשיו</button>
             <p id="newsletterSubmitStatus" class="newsletter-submit-status" aria-live="polite"></p>
-            <div class="fc-form form_346116 type-vertical rtl" data-form-id="346116-04373dc5-4e10-65c0-cbb9-ddd172ba6cb2-52136"><div class="fc_container type-vertical field-beside" style="direction: rtl;"><div class="tbody"><div class="tr fc-hidden-row"><div class="td fc-cell-field"><input type="hidden" name="MLID" value="345739" data-fc-id="MLID"><input type="email" id="email" name="eMail" data-fc-id="email"></div></div><div class="tr fc-button-row fc-hidden-row fc-colspan"><div colspan="2" class="td fc-cell-text"><input style="display:none" type="hidden" class="MustField" name="form" value="346116__ab83f415-3ded-477e-be8a-f200b4287654" data-fc-id="form"><input class="MustField" type="button" onclick="return submitForm(this);" value=""></div></div></div></div><link href="//app.creaditor.com/formCreator/assets/fc-basics.min.css?v=1.0.18" rel="stylesheet"><script type="text/javascript" src="//app.creaditor.com/formCreator/assets/fc-basics.min.js?v=1.0.18"></script><link data-id="346116" href="https://panel.sendmsg.co.il/userfiles/site52136/FormCreate/fc_346116.css" rel="stylesheet"></div>
+            <form id="346116" class="fc_container type-vertical field-beside" style="direction: rtl;" action="https://panel.sendmsg.co.il/AddUserFromSite.aspx" method="post" target="stay_iframe" lang="heb" width="294" height="101">
+                <input type="hidden" name="MLID" value="345739">
+                <div id="containingDivb510b76" cellspacing="0" class="table fc-div-struct">
+                    <div class="tbody">
+                        <div class="tr fc-row fc-row-field">
+                            <div class="td fc-cell fc-cell-text"><span class="fc-text">שם</span></div>
+                            <div class="td fc-cell fc-cell-field"><input maxlength="250" type="text" id="sendmsgName" name="1" data-fc-type="text" class="fc_input_text" data-fc-id="1"></div>
+                        </div>
+                        <div class="tr fc-row fc-row-field">
+                            <div class="td fc-cell fc-cell-text"><span class="fc-text">מייל</span></div>
+                            <div class="td fc-cell fc-cell-field"><input maxlength="250" type="email" id="sendmsgEmail" name="email" data-fc-type="text" class="fc_input_text" data-fc-id="email"></div>
+                        </div>
+                        <div class="tr fc-button-row fc-hidden-row fc-colspan">
+                            <div colspan="2" style="text-align:center" class="td fc-cell-text">
+                                <input style="display:none" type="hidden" class="MustField" name="form" value="346116__ab83f415-3ded-477e-be8a-f200b4287654" data-fc-id="form">
+                                <input class="MustField" type="submit" value="הרשמה">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <button type="button" class="first-order-later" onclick="closeFirstOrderDiscountPopup()">לא עכשיו</button>
     </div>
@@ -2154,14 +2178,15 @@
         const firstName = document.getElementById('newsletterFirstName').value.trim();
         const lastName = document.getElementById('newsletterLastName').value.trim();
 
-        const embeddedForm = document.querySelector('.newsletter-popup-form .fc-form');
-        const embeddedFields = Array.from(embeddedForm?.querySelectorAll('input, textarea') || []);
+        const embeddedForm = document.getElementById('346116');
+        const embeddedFields = Array.from(embeddedForm?.querySelectorAll('input') || []);
         if (embeddedFields.length === 0) {
             setStatus('טופס ההרשמה עדיין נטען. יש לנסות שוב בעוד רגע.');
             return;
         }
 
-        const emailField = embeddedForm.querySelector('input[name="eMail"]');
+        const nameField = embeddedForm.querySelector('input[name="1"]');
+        const emailField = embeddedForm.querySelector('input[name="email"]');
         const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
         if (!firstName || !lastName || !email) {
             setStatus('נא למלא שם פרטי, שם משפחה וכתובת אימייל.');
@@ -2171,9 +2196,10 @@
             setStatus('נא להזין כתובת אימייל תקינה.');
             return;
         }
+        if (nameField) nameField.value = `${firstName} ${lastName}`;
         if (emailField) emailField.value = email;
 
-        const submitButton = embeddedForm.querySelector('.fc_button, button[type="button"], button[type="submit"], input[type="submit"]');
+        const submitButton = embeddedForm.querySelector('button[type="submit"], input[type="submit"]');
         if (!submitButton) {
             setStatus('לא נמצא כפתור שליחה בטופס ההרשמה.');
             return;
