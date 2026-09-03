@@ -1258,12 +1258,6 @@
         <h2 class="first-order-title">רוצים 10% הנחה לקנייה הראשונה?</h2>
         <p class="first-order-text">הירשמו עכשיו לניוזלטר שלנו ומיד תקבלו 10% הנחה לקנייה הראשונה.</p>
         <div class="newsletter-popup-form">
-            <div class="newsletter-fields">
-                <input type="text" id="newsletterFirstName" placeholder="שם פרטי" autocomplete="given-name" aria-label="שם פרטי">
-                <input type="text" id="newsletterLastName" placeholder="שם משפחה" autocomplete="family-name" aria-label="שם משפחה">
-                <input type="email" id="newsletterEmail" placeholder="כתובת אימייל" autocomplete="email" aria-label="כתובת אימייל">
-                <input type="tel" id="newsletterPhone" placeholder="מספר סלולרי" autocomplete="tel" aria-label="מספר סלולרי">
-            </div>
             <button type="button" class="first-order-google newsletter-submit" onclick="submitNewsletterSignup()">הירשמו עכשיו</button>
             <p id="newsletterSubmitStatus" class="newsletter-submit-status" aria-live="polite"></p>
             <div class="fc-form form_346116 type-vertical rtl" data-form-id="346116-04373dc5-4e10-65c0-cbb9-ddd172ba6cb2-52136"><div class="fc_container type-vertical field-beside" style="direction: rtl;" data-action="https://panel.sendmsg.co.il/AddUserFromSite.aspx" data-method="post" data-target="stay_iframe" data-lang="heb" data-width="294" data-height="81"><div id="containingDivb510b76" cellspacing="0" class="table fc-div-struct"><div class="tbody"><div class="tr fc-hidden-row"><div class="td fc-cell-text"><span class="fc-text"><input type="hidden" name="MLID" value="345739" data-fc-id="MLID">דואר אלקטרוני:*</span></div><div class="td fc-cell-field"><input type="email" id="email" name="eMail" class="" data-fc-id="email" data-fc-must-fill="true"></div></div><div class="tr"><div class="td fc-cell-text"><span class="fc-text">סלולרי:</span><span class="fc-must-star">*</span></div><div class="td fc-cell-field"><input type="tel" id="cellphone" name="cellphone" class="" data-fc-id="cellphone" data-fc-must-fill="true"></div></div><div class="tr fc-button-row fc-hidden-row fc-colspan"><div colspan="2" style="text-align:center" class="td fc-cell-text"><input style="display:none" type="hidden" class="MustField" name="form" value="346116__ab83f415-3ded-477e-be8a-f200b4287654" data-fc-id="form"><input class="MustField" type="button" onclick="return submitForm(this);" value=""></div></div></div></div></div><link href="//app.creaditor.com/formCreator/assets/fc-basics.min.css?v=1.0.18" rel="stylesheet"><script type="text/javascript" src="//app.creaditor.com/formCreator/assets/fc-basics.min.js?v=1.0.18"></script><link data-id="346116" href="https://panel.sendmsg.co.il/userfiles/site52136/FormCreate/fc_346116.css" rel="stylesheet"></div>
@@ -2147,21 +2141,8 @@
     }
 
     function submitNewsletterSignup() {
-        const firstName = document.getElementById('newsletterFirstName').value.trim();
-        const lastName = document.getElementById('newsletterLastName').value.trim();
-        const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
         const status = document.getElementById('newsletterSubmitStatus');
         const setStatus = message => { if (status) status.textContent = message; };
-
-        const phone = document.getElementById('newsletterPhone').value.trim();
-        if (!firstName || !lastName || !email || !phone) {
-            setStatus('נא למלא שם פרטי, שם משפחה, כתובת אימייל ומספר סלולרי.');
-            return;
-        }
-        if (!isValidEmail(email)) {
-            setStatus('נא להזין כתובת אימייל תקינה.');
-            return;
-        }
 
         const embeddedForm = document.querySelector('.newsletter-popup-form .fc-form');
         const embeddedFields = Array.from(embeddedForm?.querySelectorAll('input, textarea') || []);
@@ -2172,6 +2153,16 @@
 
         const emailField = embeddedForm.querySelector('input[name="eMail"]');
         const phoneField = embeddedForm.querySelector('input[name="cellphone"]');
+        const email = emailField?.value.trim().toLowerCase() || '';
+        const phone = phoneField?.value.trim() || '';
+        if (!email || !phone) {
+            setStatus('נא למלא כתובת אימייל ומספר סלולרי.');
+            return;
+        }
+        if (!isValidEmail(email)) {
+            setStatus('נא להזין כתובת אימייל תקינה.');
+            return;
+        }
         if (emailField) emailField.value = email;
         if (phoneField) phoneField.value = phone;
 
