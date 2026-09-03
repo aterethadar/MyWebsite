@@ -3019,6 +3019,11 @@
     }
 
     function openTestimonialPopup() {
+        sequentialPopupPriority.forEach(id => {
+            pendingSequentialPopups.delete(id);
+            const popup = document.getElementById(id);
+            if (popup) popup.style.display = 'none';
+        });
         document.getElementById('testimonialPopup').style.display = 'flex';
     }
 
