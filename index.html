@@ -450,6 +450,7 @@
         .nedarim-payment-dialog h3 { margin: 0 0 16px; color: #3b2f1f; }
         .nedarim-payment-close { position: absolute; top: 10px; left: 12px; width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 50%; background: #fffdf8; color: var(--text); font-size: 1.5rem; cursor: pointer; }
         #nedarimPaymentFrame { display: block; width: 100%; min-height: 430px; border: 0; }
+        .nedarim-payment-submit { width: 100%; margin-top: 14px; }
         @media (max-width: 600px) {
             #nedarimPaymentBox { align-items: flex-start; padding: 10px; }
             .nedarim-payment-dialog { width: 100%; max-height: calc(100vh - 20px); padding: 22px 12px 12px; }
@@ -1509,6 +1510,7 @@
                 <button type="button" class="nedarim-payment-close" aria-label="סגירת חלון התשלום" onclick="closeNedarimPayment()">&times;</button>
                 <h3 id="nedarimPaymentTitle">פרטי תשלום מאובטחים</h3>
                 <iframe id="nedarimPaymentFrame" title="טופס תשלום מאובטח של נדרים פלוס" loading="eager"></iframe>
+                <button type="button" class="btn-send nedarim-payment-submit" onclick="submitNedarimPayment()">לתשלום</button>
             </div>
         </div>
         <div class="cart-actions">
@@ -3012,6 +3014,25 @@
         const paymentFrame = document.getElementById('nedarimPaymentFrame');
         if (paymentBox) paymentBox.hidden = true;
         if (paymentFrame) paymentFrame.src = 'about:blank';
+    }
+
+    function submitNedarimPayment() {
+        const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        const status = document.getElementById('checkoutStatus');
+        if (!paymentFrame || !paymentFrame.dataset.paymentConfig) {
+            if (status) status.textContent = 'טופס התשלום עדיין לא נטען. נסו שוב בעוד רגע.';
+            return;
+        }
+        try {
+            const config = JSON.parse(paymentFrame.dataset.paymentConfig);
+            paymentFrame.contentWindow.postMessage({
+                Name: 'FinishTransaction2',
+                Value: config.value
+            }, 'https://matara.pro');
+            if (status) status.textContent = 'התשלום נשלח לאישור...';
+        } catch (error) {
+            if (status) status.textContent = 'לא ניתן להפעיל את התשלום. נסו שוב.';
+        }
     }
 
     async function submitNedarimCallback(orderId, transactionData = {}) {
