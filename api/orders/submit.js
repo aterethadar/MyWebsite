@@ -290,7 +290,7 @@ function createNedarimPaymentConfig(order, orderId) {
 
 
 
-    return { url: paymentUrl.toString(), value: { Mosad: mosadId, ApiValid: apiValid, PaymentType: "regular", Currency: "1", FirstName: order.name, LastName: "", Street: order.address, City: "", Phone: order.phone, Mail: order.email, Amount: String(Math.round(order.amount)), Tashlumim: "1", Groupe: shluha, Comment: "Order " + orderId, CallBack: callbackUrl, Param1: orderId } };
+    return { url: paymentUrl.toString(), value: { Mosad: mosadId, ApiValid: apiValid, PaymentType: "Normal", Currency: "1", FirstName: order.name, LastName: "", Street: order.address, City: "", Phone: order.phone, Mail: order.email, Amount: String(Math.round(order.amount)), Tashlumim: "1", Groupe: shluha, Comment: "Order " + orderId, CallBack: callbackUrl, Param1: orderId } };
 }
 
 
