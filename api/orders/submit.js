@@ -290,7 +290,35 @@ function createNedarimPaymentConfig(order, orderId) {
 
 
 
-    return { url: paymentUrl.toString(), value: { Mosad: mosadId, ApiValid: apiValid, PaymentType: "Normal", Currency: "1", FirstName: order.name, LastName: "", Street: order.address, City: "", Phone: order.phone, Mail: order.email, Amount: String(Math.round(order.amount)), Tashlumim: "1", Groupe: shluha, Comment: "Order " + orderId, CallBack: callbackUrl, Param1: orderId } };
+    return {
+        url: paymentUrl.toString(),
+        value: {
+            Mosad: mosadId,
+            ApiValid: apiValid,
+            PaymentType: 'Ragil',
+            Currency: '1',
+            Zeout: '',
+            FirstName: order.name.split(/\s+/)[0] || order.name,
+            LastName: order.name.split(/\s+/).slice(1).join(' '),
+            Street: order.address || '',
+            City: '',
+            Phone: order.phone,
+            Mail: order.email,
+            Amount: String(Math.round(order.amount)),
+            Tashlumim: '1',
+            Day: '',
+            StartFrom: '',
+            Groupe: shluha || '',
+            Comment: 'Order ' + orderId,
+            Param1: orderId,
+            Param2: '',
+            ForceUpdateMatching: '',
+            ThirdPartyReceipt: '',
+            CallBack: callbackUrl || '',
+            CallBackMailError: '',
+            Tokef: ''
+        }
+    };
 }
 
 
