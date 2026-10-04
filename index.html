@@ -3111,9 +3111,7 @@
         if (typeof eventValue === 'string') {
             try {
                 eventValue = JSON.parse(eventValue);
-            } catch {
-                eventValue = { Message: eventValue };
-            }
+            } catch { /* Keep plain-text protocol responses such as OK unchanged. */ }
         }
 
         if (eventName === 'ValidateFields') {
