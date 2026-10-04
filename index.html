@@ -3023,20 +3023,32 @@
             if (status) status.textContent = 'טופס התשלום עדיין לא נטען. נסו שוב בעוד רגע.';
             return;
         }
+        if (paymentFrame.dataset.paymentSubmitting === 'true') return;
+        paymentFrame.dataset.paymentSubmitting = 'true';
+        paymentFrame.dataset.awaitingCardValidation = 'true';
+        paymentFrame.contentWindow.postMessage({ Name: 'ValidateFields' }, 'https://matara.pro');
+        if (status) status.textContent = 'בודקים את פרטי הכרטיס...';
+    }
+
+    function sendNedarimPaymentAfterValidation() {
+        const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        const status = document.getElementById('checkoutStatus');
+        if (!paymentFrame || !paymentFrame.dataset.paymentConfig) return;
         try {
             const config = JSON.parse(paymentFrame.dataset.paymentConfig);
             paymentFrame.contentWindow.postMessage({
                 Name: 'FinishTransaction2',
                 Value: config.value
             }, 'https://matara.pro');
-            if (status) status.textContent = 'התשלום נשלח לאישור...';
+            if (status) status.textContent = 'מעבדים את התשלום המאובטח...';
         } catch (error) {
+            paymentFrame.dataset.paymentSubmitting = 'false';
             if (status) status.textContent = 'לא ניתן להפעיל את התשלום. נסו שוב.';
         }
     }
 
     async function submitNedarimCallback(orderId, transactionData = {}) {
-        if (!orderId || !transactionData.TransactionId && !transactionData.transactionId) return null;
+        if (!orderId || !(transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID)) return null;
         try {
             const response = await fetch('/api/orders/callback', {
                 method: 'POST',
@@ -3044,8 +3056,8 @@
                 body: JSON.stringify({
                     OrderId: orderId,
                     orderId,
-                    TransactionId: transactionData.TransactionId || transactionData.transactionId,
-                    transactionId: transactionData.TransactionId || transactionData.transactionId,
+                    TransactionId: transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID,
+                    transactionId: transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID,
                     MosadId: transactionData.MosadId || transactionData.mosadId || '7019114',
                     mosadId: transactionData.MosadId || transactionData.mosadId || '7019114',
                     ConfirmationNum: transactionData.ConfirmationNum || transactionData.ConfirmationNumber || transactionData.confirmationNum || '',
@@ -3066,7 +3078,7 @@
         const frameOrderId = paymentFrame?.dataset.orderId || '';
         const rawValue = eventData?.Value && typeof eventData.Value === 'object' ? eventData.Value : eventData || {};
         const orderId = eventData?.OrderId || eventData?.orderId || rawValue.OrderId || rawValue.orderId || frameOrderId;
-        const transactionId = rawValue.TransactionId || rawValue.transactionId || eventData?.TransactionId || eventData?.transactionId || '';
+        const transactionId = rawValue.TransactionId || rawValue.transactionId || rawValue.TransactionID || eventData?.TransactionId || eventData?.transactionId || eventData?.TransactionID || '';
         const confirmationNum = rawValue.ConfirmationNum || rawValue.ConfirmationNumber || rawValue.confirmationNum || '';
         const mosadId = rawValue.MosadId || rawValue.mosadId || eventData?.MosadId || eventData?.mosadId || '7019114';
 
@@ -3082,33 +3094,61 @@
             return;
         }
 
-        if (status) status.textContent = callbackResult.result?.status === 'paid' ? 'התשלום אושר בהצלחה.' : 'התשלום אושר בהצלחה.';
-        closeNedarimPayment();
+        if (callbackResult.result?.status === 'paid' || callbackResult.result?.status === 'already-paid') {
+            if (status) status.textContent = 'התשלום אושר בהצלחה.';
+            closeNedarimPayment();
+            return;
+        }
+        if (status) status.textContent = 'לא הצלחנו לאמת את התשלום. אין לסגור את החלון; נסו שוב או פנו לשירות.';
     }
 
     window.addEventListener('message', async event => {
         if (event.origin !== 'https://matara.pro' || !event.data) return;
         const status = document.getElementById('checkoutStatus');
         const eventName = event.data.Name || event.data.name || '';
-        const eventValue = event.data.Value || event.data.value || event.data;
+        let eventValue = event.data.Value || event.data.value || event.data;
+        const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        if (typeof eventValue === 'string') {
+            try {
+                eventValue = JSON.parse(eventValue);
+            } catch {
+                eventValue = { Message: eventValue };
+            }
+        }
 
         if (eventName === 'ValidateFields') {
-            if (status) status.textContent = eventValue === 'OK' ? 'מעבדים את התשלום...' : 'נא לבדוק את פרטי האשראי.';
+            if (eventValue === 'OK' && paymentFrame?.dataset.awaitingCardValidation === 'true') {
+                paymentFrame.dataset.awaitingCardValidation = 'false';
+                sendNedarimPaymentAfterValidation();
+            } else {
+                if (paymentFrame) paymentFrame.dataset.paymentSubmitting = 'false';
+                const field = event.data.Field || event.data.field || '';
+                const labels = { Card: 'מספר כרטיס', Expiration: 'תוקף הכרטיס', CVV: 'שלוש הספרות בגב הכרטיס' };
+                if (status) status.textContent = field
+                    ? `נא לבדוק את ${labels[field] || 'פרטי הכרטיס'} ולנסות שוב.`
+                    : 'נא לבדוק את פרטי הכרטיס ולנסות שוב.';
+            }
             return;
         }
 
         if (eventName === 'TransactionResponse' || eventName === 'FinishTransaction' || eventName === 'FinishTransaction2') {
+            if (paymentFrame) paymentFrame.dataset.paymentSubmitting = 'false';
             const response = eventValue && typeof eventValue === 'object' ? eventValue : {};
-            if (response.Status === 'OK' || response.status === 'OK') {
-                await finalizeNedarimPayment(eventData = { Value: response, OrderId: document.getElementById('nedarimPaymentFrame')?.dataset.orderId || '', TransactionId: response.TransactionId || response.transactionId || '' });
+            const transactionId = response.TransactionId || response.transactionId || response.TransactionID || event.data.TransactionId || event.data.transactionId || event.data.TransactionID || '';
+            if (transactionId) {
+                await finalizeNedarimPayment({
+                    Value: response,
+                    OrderId: document.getElementById('nedarimPaymentFrame')?.dataset.orderId || '',
+                    TransactionId: transactionId
+                });
                 return;
             }
-            if (status) status.textContent = `התשלום לא אושר: ${response.Message || response.message || 'נסו שוב.'}`;
+            if (status) status.textContent = `נדרים פלוס לא החזירה מזהה עסקה: ${response.Message || response.BackMessage || response.message || 'נסו שוב.'}`;
             return;
         }
 
-        if (eventValue && typeof eventValue === 'object' && (eventValue.Status === 'OK' || eventValue.status === 'OK')) {
-            await finalizeNedarimPayment({ Value: eventValue, OrderId: document.getElementById('nedarimPaymentFrame')?.dataset.orderId || '', TransactionId: eventValue.TransactionId || eventValue.transactionId || '' });
+        if (eventValue && typeof eventValue === 'object' && (eventValue.TransactionId || eventValue.transactionId || eventValue.TransactionID)) {
+            await finalizeNedarimPayment({ Value: eventValue, OrderId: document.getElementById('nedarimPaymentFrame')?.dataset.orderId || '', TransactionId: eventValue.TransactionId || eventValue.transactionId || eventValue.TransactionID });
             return;
         }
 
