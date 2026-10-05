@@ -337,7 +337,7 @@
             background: linear-gradient(135deg, #fffdf8 0%, #f5ebd8 100%);
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 6px 18px var(--shadow);
+            box-shadow: 0 6px 18px var(--shadow); display: flex; flex-direction: column;
             border: 1px solid var(--border);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             text-align: center;
@@ -357,7 +357,7 @@
             border-radius: 8px;
         }
 
-        .logo { position: relative; z-index: 1100; height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2)); transition: transform 0.2s ease; cursor: pointer; transform-origin: center center; }
+        .product-card .btn-add { box-sizing: border-box; display: flex; align-items: center; justify-content: center; height: 46px; min-height: 46px; margin-top: auto; } .logo { position: relative; z-index: 1100; height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2)); transition: transform 0.2s ease; cursor: pointer; transform-origin: center center; }
         .logo:hover { transform: scale(1.4); }
         .cart-icon { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; color: var(--gold-soft); font-weight: bold; font-size: 1.18em; }
         .cart-icon > span:first-child { font-size: 1.45em; line-height: 1; }
@@ -468,7 +468,7 @@
             padding: 20px;
             border-radius: 14px;
             border-right: 5px solid var(--gold);
-            box-shadow: 0 6px 18px var(--shadow);
+            box-shadow: 0 6px 18px var(--shadow); display: flex; flex-direction: column;
             text-align: right;
             margin-bottom: 20px;
             display: flex;
@@ -1362,8 +1362,8 @@
                     <li><strong>התאמה אישית:</strong> אפשרות לפתח מוצר ייחודי לפי הצורך.</li>
                 </ul>
                 <div class="hero-actions">
-                    <button type="button" class="hero-btn primary" onclick="showPage('shop')">למוצרים</button>
-                    <button type="button" class="hero-btn secondary" onclick="showPage('create-product')">למוצר בהתאמה אישית</button>
+                    <button type="button" class="hero-btn primary" onclick="showPage('shop')">בואו לבחור מוצר</button>
+                    <button type="button" class="hero-btn secondary" onclick="showPage('create-product')">יש לי רעיון למוצר</button>
                 </div>
             </div>
         </div>
@@ -1372,7 +1372,7 @@
 
 <div id="about" class="page">
     <h2>אודותינו</h2>
-    <img src="עטרת הדר GIF עם השיהיה.gif" alt="עטרת הדר" class="about-gif">
+    
     <h3>זה אלי ואנוהו – פאר, מסורת ואיכות ללא פשרות</h3>
     <p>ב"עטרת הדר" אנו מאמינים כי מצווה מהודרת ומכובדת אינה רק הידור הלכתי, אלא ביטוי עמוק של קשר, אהבה וכבוד למסורת ישראל. מתוך חזון זה הקמנו את המרכז לתשמישי קדושה ויודאיקה, במטרה להנגיש לציבור מוצרי קודש ואמנות יהודית ברמה הגבוהה ביותר.</p>
 
@@ -1473,7 +1473,7 @@
 </div>
 
 <div id="cart" class="page">
-    <h2>עגלת הקניות</h2>
+    <h2>העגלה שלי</h2>
     <div id="cartItems" class="cart-page"></div>
     <p id="cartTotal"></p>
     <p id="paraffinProgressMessage" class="paraffin-progress-message" aria-live="polite"></p>
@@ -1483,8 +1483,8 @@
             <p id="couponStatus" class="coupon-status" aria-live="polite"></p>
         </div>
     <div class="cart-actions">
-        <button type="button" class="btn-send" onclick="showPage('shop')">המשך לקנות</button>
-        <button type="button" class="btn-send" onclick="checkoutOrder()">המשך לתשלום</button>
+        <button type="button" class="btn-send" onclick="showPage('shop')">בא לי עוד מוצר</button>
+        <button type="button" class="btn-send" onclick="checkoutOrder()">יאללה, לתשלום</button>
     </div>
 </div>
 
@@ -1514,7 +1514,7 @@
             </div>
         </div>
         <div class="cart-actions">
-            <button type="button" class="btn-send" onclick="showPage('cart')">חזרה לעגלה</button>
+            <button type="button" class="btn-send" onclick="showPage('cart')">חזרה לעגלה שלי</button>
             <button type="button" class="btn-send checkout-payment-button" onclick="submitOrderForPayment()">לתשלום</button>
         </div>
     </div>
@@ -1559,7 +1559,7 @@
             </select>
             <label id="quantityLabel" for="productQuantity">בחר כמות</label>
             <select id="productQuantity"></select>
-            <button type="submit" class="btn-send" style="margin-top: 16px;">הוסף לעגלה</button>
+            <button type="submit" class="btn-send" style="margin-top: 16px;">יאללה, לעגלה</button>
         </form>
     </div>
 </div>
@@ -1570,8 +1570,8 @@
         <h2>המוצר נוסף לעגלה!</h2>
         <p id="popupMessage" class="add-cart-message"></p>
         <div class="popup-buttons">
-            <button type="button" class="btn-send" onclick="closeAddCartPopup(); showPage('cart')">לעגלת הקניות</button>
-            <button type="button" class="btn-send" onclick="closeAddCartPopup(); checkoutOrder()">שלח הזמנה</button>
+            <button type="button" class="btn-send" onclick="closeAddCartPopup(); showPage('cart')">לעגלה שלי</button>
+            <button type="button" class="btn-send" onclick="closeAddCartPopup(); checkoutOrder()">להשלמת ההזמנה</button>
         </div>
     </div>
 </div>
@@ -3199,7 +3199,7 @@
     window.addEventListener('beforeunload', event => {
         if (cart.length === 0) return;
         event.preventDefault();
-        event.returnValue = 'יש מוצרים בעגלת הקניות.';
+        event.returnValue = 'יש מוצרים בעגלה שלי.';
     });
 
     function buildOrderSummary(discountState = null) {
@@ -3214,7 +3214,7 @@
         const subtotal = getCartSubtotal();
         const state = discountState || getFirstOrderDiscountState(subtotal);
         const discountText = state.eligible ? `\nהנחת ניוזלטר: 10% - ₪${Math.round(state.discountAmount)}` : '';
-        return `הזמנה מעגלת הקניות:\n${lines.join('\n')}\nסה"כ לפני הנחה: ₪${subtotal}${discountText}\nסה"כ לתשלום: ₪${Math.round(state.discountedTotal)}`;
+        return `הזמנה מהעגלה שלי:\n${lines.join('\n')}\nסה"כ לפני הנחה: ₪${subtotal}${discountText}\nסה"כ לתשלום: ₪${Math.round(state.discountedTotal)}`;
     }
 
     function getStoredTestimonials() {
