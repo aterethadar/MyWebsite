@@ -22,11 +22,9 @@ module.exports = async function handler(req, res) {
             createdAt: row.submitted_at || null
         }));
 
-        json(res, 200, {
-            ok: true,
-            testimonials
-        });
+        json(res, 200, { ok: true, testimonials });
     } catch (error) {
+        console.error('testimonials-approved-fetch-failed', error);
         json(res, 500, {
             ok: false,
             error: 'approved-fetch-failed',
