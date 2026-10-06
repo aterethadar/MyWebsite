@@ -1746,6 +1746,8 @@
     let emailAuthState = null;
     let newsletterSignupPending = false;
     let isCheckoutSubmission = false;
+    let isContactFormSubmitting = false;
+    
     const selectedCartItems = new Set();
     const ACCESSIBILITY_SETTINGS_KEY = 'etrat_hadar_accessibility_settings';
 
@@ -2247,20 +2249,20 @@
             return;
         }
 
-        localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
-        setStatus('שולחים את ההרשמה וקוד הקופון למייל...');
+        
+        submitButton.click();         setStatus('בקשת ההרשמה נשלחה. שולחים את קוד הקופון למייל...');
         try {
             const response = await fetch('/api/newsletter/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ name: firstName, email })
             });
-            if (!response.ok) throw new Error('newsletter-email-failed');
-            submitButton.click();
+            if (!response.ok) throw new Error('newsletter-email-failed'); localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
+            
             setStatus('נרשמתם בהצלחה. קוד הקופון נשלח אליכם במייל.');
             setTimeout(closeFirstOrderDiscountPopup, 1200);
         } catch (error) {
-            setStatus('לא הצלחנו לשלוח את קוד הקופון. נסו שוב בעוד רגע.');
+            console.error('newsletter-signup-coupon-failed', error); setStatus('בקשת ההרשמה נשלחה, אך קוד הקופון לא נשלח. נסו שוב מאוחר יותר.');
         }
     }
 
@@ -2385,7 +2387,7 @@
             return false;
         }
 
-        if (newsletterSignupPending) {
+        isContactFormSubmitting = true;         window.setTimeout(() => { isContactFormSubmitting = false; }, 30000);          if (newsletterSignupPending) {
             localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email.toLowerCase());
             newsletterSignupPending = false;
         }
@@ -3197,7 +3199,7 @@
     }
 
     window.addEventListener('beforeunload', event => {
-        if (cart.length === 0) return;
+        if (cart.length === 0 || isContactFormSubmitting) return;
         event.preventDefault();
         event.returnValue = 'יש מוצרים בעגלה שלי.';
     });
@@ -3321,7 +3323,7 @@
             saveStoredTestimonials(testimonials);
         } catch (error) {
             const fallback = getStoredTestimonials();
-            fallback.forEach((entry) => renderTestimonialCard(entry, false));
+            fallback.forEach((entry) => renderTestimonialCard(entry, false)); if (fallback.length === 0) { const emptyState = document.getElementById('testimonialsEmptyState'); if (emptyState) { emptyState.textContent = 'לא הצלחנו לטעון את ההמלצות כרגע. נסו לרענן את הדף בעוד כמה דקות.'; emptyState.dataset.loadError = 'true'; } }
         }
 
         toggleTestimonialsEmptyState();
@@ -3497,5 +3499,5 @@
         }
     });
 </script>
-</body>
+<iframe name="stay_iframe" title="תשובת הרשמה לניוזלטר" hidden></iframe> </body>
 </html>
