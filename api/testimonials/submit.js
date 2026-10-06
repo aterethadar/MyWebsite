@@ -110,10 +110,10 @@ module.exports = async function handler(req, res) {
             message: 'submitted-for-approval'
         });
     } catch (error) {
-        const message = typeof error.message === 'string' ? error.message : 'unknown-error';
-        json(res, 400, {
+        const message = typeof error.message === 'string' ? error.message : 'unknown-error'; const validationErrors = new Set(['invalid-json', 'missing-required-fields', 'invalid-email', 'invalid-rating', 'content-too-long', 'name-too-long', 'image-too-large']); const statusCode = validationErrors.has(message) ? 400 : 500; if (statusCode === 500) console.error('testimonial-submit-failed', error);
+        json(res, statusCode, {
             ok: false,
-            error: message
+            error: statusCode === 400 ? message : 'testimonial-submit-failed'
         });
     }
 };
