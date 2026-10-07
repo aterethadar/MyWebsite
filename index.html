@@ -2327,23 +2327,10 @@
         }
 
         submitButton.click();
-        setStatus('בקשת ההרשמה נשלחה. שולחים את קוד ההטבה למייל...');
-        try {
-            const response = await fetch('/api/newsletter/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ name: firstName, email })
-            });
-            const result = await response.json().catch(() => ({}));
-            if (!response.ok || result.ok !== true) throw new Error(result.error || 'newsletter-email-failed');
-            localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
-            localStorage.setItem(NEWSLETTER_DISCOUNT_CODE_KEY, result.couponCode || NEWSLETTER_COUPON_CODE);
-            setStatus('נרשמתם בהצלחה. קוד הקופון נשלח אליכם במייל.');
-            setTimeout(closeFirstOrderDiscountPopup, 1200);
-        } catch (error) {
-            console.error('newsletter-signup-coupon-failed', error);
-            setStatus('בקשת ההרשמה נשלחה, אך לא הצלחנו לשלוח את קוד ההטבה. נסו שוב מאוחר יותר או פנו אלינו.');
-        }
+        localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
+        localStorage.setItem(NEWSLETTER_DISCOUNT_CODE_KEY, NEWSLETTER_COUPON_CODE);
+        setStatus('בקשת ההרשמה נשלחה לניוזלטר. קוד ההטבה יישלח למייל; אם לא הגיע, בדקו גם בספאם.');
+        setTimeout(closeFirstOrderDiscountPopup, 1800);
     }
 
     function triggerGoogleSignIn() {
