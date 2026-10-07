@@ -96,21 +96,38 @@ module.exports = async function handler(req, res) {
             rejectUrl
         });
 
+        let thankYouEmailSent = true;
         try {
             await sendTestimonialThankYouEmail({
                 toEmail: email,
                 customerName: name
             });
         } catch (error) {
+            thankYouEmailSent = false;
             console.error('testimonial-thank-you-email-failed', error);
         }
 
         json(res, 200, {
             ok: true,
-            message: 'submitted-for-approval'
+            message: 'submitted-for-approval',
+            thankYouEmailSent
         });
     } catch (error) {
-        const message = typeof error.message === 'string' ? error.message : 'unknown-error'; const validationErrors = new Set(['invalid-json', 'missing-required-fields', 'invalid-email', 'invalid-rating', 'content-too-long', 'name-too-long', 'image-too-large']); const statusCode = validationErrors.has(message) ? 400 : 500; if (statusCode === 500) console.error('testimonial-submit-failed', error);
+        const message = typeof error.message === 'string' ? error.message : 'unknown-error';
+        const validationErrors = new Set([
+            'missing-required-fields',
+            'invalid-email',
+            'invalid-rating',
+            'content-too-long',
+            'name-too-long',
+            'image-too-large'
+        ]);
+        const statusCode = validationErrors.has(message) ? 400 : 500;
+
+        if (statusCode === 500) {
+            console.error('testimonial-submit-failed', error);
+        }
+
         json(res, statusCode, {
             ok: false,
             error: statusCode === 400 ? message : 'testimonial-submit-failed'
