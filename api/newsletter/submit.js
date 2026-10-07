@@ -1,7 +1,7 @@
 'use strict';
 
 const { json, methodNotAllowed, readJsonBody } = require('../_lib/http');
-const { getOptionalEnv } = require('../_lib/config');
+const { getOptionalEnv, requireEnv } = require('../_lib/config');
 const { sendNewsletterCouponEmail } = require('../_lib/email');
 
 module.exports = async function handler(req, res) {
@@ -15,19 +15,25 @@ module.exports = async function handler(req, res) {
         const name = typeof payload.name === 'string' ? payload.name.trim() : '';
         const email = typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : '';
         if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            json(res, 400, { ok: false, error: 'invalid-newsletter-details' });
-            return;
+            throw new Error('invalid-newsletter-details');
         }
 
+        const couponCode = getOptionalEnv('NEWSLETTER_COUPON_CODE', 'ATERET10');
         await sendNewsletterCouponEmail({
             toEmail: email,
             customerName: name,
-            couponCode: getOptionalEnv('NEWSLETTER_COUPON_CODE', 'ATERET10')
+            couponCode
         });
 
-        json(res, 200, { ok: true });
+        json(res, 200, { ok: true, couponCode });
     } catch (error) {
-        console.error('newsletter-submit-failed', error);
-        json(res, 503, { ok: false, error: 'newsletter-send-failed' });
+        const message = typeof error.message === 'string' ? error.message : 'unknown-error';
+        if (message !== 'invalid-newsletter-details') {
+            console.error('newsletter-submit-failed', error);
+        }
+        json(res, message === 'invalid-newsletter-details' ? 400 : 503, {
+            ok: false,
+            error: message === 'invalid-newsletter-details' ? message : 'newsletter-send-failed'
+        });
     }
 };
