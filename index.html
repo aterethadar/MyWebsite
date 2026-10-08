@@ -1784,11 +1784,9 @@
     const originalAppendChild = Node.prototype.appendChild;
     const originalInsertBefore = Node.prototype.insertBefore;
     const patchIntegrity = node => {
-        if (node instanceof HTMLScriptElement && node.src === chatbotAssetUrl && node.integrity === publishedIntegrity) {
-            node.integrity = assetIntegrity;
-            return true;
-        }
-        return false;
+        if (!(node instanceof HTMLScriptElement) || !node.src.includes('/app-releases/ai-chatbot/') || !node.src.endsWith('/widget/aiChatbot.js')) return false;
+        if (node.src === chatbotAssetUrl && node.integrity === publishedIntegrity) node.integrity = assetIntegrity;
+        return true;
     };
     const restoreDomMethods = () => {
         Node.prototype.appendChild = originalAppendChild;
