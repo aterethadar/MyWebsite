@@ -3231,33 +3231,17 @@
         }
     }
 
-    async function submitNedarimCallback(orderId, transactionData = {}) {
-        if (!orderId || !(transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID)) return null;
+    async function getNedarimPaymentStatus(orderId, transactionId) {
+        if (!orderId || !transactionId) return null;
         try {
-            const paymentConfig = JSON.parse(document.getElementById('nedarimPaymentFrame')?.dataset.paymentConfig || '{}');
-            const callbackAmount = transactionData.Amount || transactionData.amount || paymentConfig.value?.Amount || '';
-            const response = await fetch('/api/orders/callback', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    OrderId: orderId,
-                    orderId,
-                    Status: transactionData.Status || transactionData.status || 'OK',
-                    status: transactionData.Status || transactionData.status || 'OK',
-                    Amount: callbackAmount,
-                    amount: callbackAmount,
-                    TransactionId: transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID,
-                    transactionId: transactionData.TransactionId || transactionData.transactionId || transactionData.TransactionID,
-                    MosadId: transactionData.MosadId || transactionData.mosadId || '7019114',
-                    mosadId: transactionData.MosadId || transactionData.mosadId || '7019114',
-                    ConfirmationNum: transactionData.ConfirmationNum || transactionData.ConfirmationNumber || transactionData.confirmationNum || '',
-                    confirmationNum: transactionData.ConfirmationNum || transactionData.ConfirmationNumber || transactionData.confirmationNum || ''
-                })
+            const params = new URLSearchParams({ orderId, transactionId });
+            const response = await fetch(`/api/orders/status?${params}`, {
+                headers: { 'Accept': 'application/json' }
             });
             const result = await response.json().catch(() => ({}));
             return { response, result };
         } catch (error) {
-            console.error('Nedarim callback failed:', error);
+            console.error('Nedarim payment status check failed:', error);
             return null;
         }
     }
@@ -3316,6 +3300,12 @@
 
         if (paymentFrame?.dataset.verificationInProgress === 'true' && !isVerificationRetry) return;
         if (paymentFrame) paymentFrame.dataset.pendingTransactionId = transactionId;
+        try {
+            const activePayment = JSON.parse(localStorage.getItem(ACTIVE_NEDARIM_PAYMENT_KEY) || '{}');
+            localStorage.setItem(ACTIVE_NEDARIM_PAYMENT_KEY, JSON.stringify({ ...activePayment, orderId, transactionId }));
+        } catch (error) {
+            console.error('Unable to persist Nedarim transaction state:', error);
+        }
         if (paymentFrame) {
             paymentFrame.dataset.paymentSubmitting = 'false';
             paymentFrame.dataset.chargeInitiated = 'true';
@@ -3325,16 +3315,9 @@
         if (status) status.textContent = 'מאמתים את אישור התשלום...';
         closeNedarimPayment();
 
-        const paymentConfig = JSON.parse(paymentFrame?.dataset.paymentConfig || '{}');
-        const callbackResult = await submitNedarimCallback(orderId, {
-            Status: providerStatus,
-            Amount: rawValue.Amount || eventData?.Amount || paymentConfig.value?.Amount || '',
-            TransactionId: transactionId,
-            MosadId: mosadId,
-            ConfirmationNum: confirmationNum
-        });
+        const callbackResult = await getNedarimPaymentStatus(orderId, transactionId);
 
-        if (callbackResult?.response?.ok && (callbackResult.result?.status === 'paid' || callbackResult.result?.status === 'already-paid')) {
+        if (callbackResult?.response?.ok && callbackResult.result?.status === 'paid') {
             if (paymentFrame) {
                 paymentFrame.dataset.paymentComplete = 'true';
                 paymentFrame.dataset.paymentSubmitting = 'false';
@@ -3364,8 +3347,8 @@
         }
 
         const callbackError = callbackResult?.result?.error || '';
-        const canRetry = !callbackResult || callbackResult.response?.status >= 500;
-        if (canRetry && verificationAttempt < 2) {
+        const canRetry = !callbackResult || callbackResult.response?.status >= 500 || callbackResult.result?.status === 'pending';
+        if (canRetry && verificationAttempt < 9) {
             if (status) status.textContent = 'בודקים את אישור העסקה...';
             setTimeout(() => finalizeNedarimPayment({
                 ...eventData,
