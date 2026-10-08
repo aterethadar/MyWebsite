@@ -1128,6 +1128,25 @@
         .newsletter-float { top: calc(50% - 78px); border: 0; background: #f5f5f5; color: #111; font-size: 1.65em; font-weight: 800; }
         .whatsapp-float { top: calc(50% - 140px); background: #25d366; }
         .whatsapp-float img { width: 27px; height: 27px; }
+        .elfsight-chat-notice {
+            position: fixed;
+            right: 20px;
+            bottom: 72px;
+            z-index: 2147483647;
+            display: grid;
+            place-items: center;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: #c62828;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+        }
         .accessibility-panel {
             position: fixed;
             right: 16px;
@@ -1292,6 +1311,7 @@
             .whatsapp-float { left: 10px; }
             .newsletter-float { left: 62px; }
             .accessibility-toggle { left: 114px !important; }
+            .elfsight-chat-notice { right: 14px; bottom: calc(max(12px, env(safe-area-inset-bottom)) + 54px); }
             .floating-action::after, .accessibility-toggle::after { display: none; }
             .accessibility-panel { right: 10px; top: auto; bottom: calc(max(12px, env(safe-area-inset-bottom)) + 56px); transform: none; width: calc(100vw - 20px); }
             .contact-methods, .footer-contact { gap: 10px; }
@@ -1755,6 +1775,9 @@
 
 <a href="https://wa.me/972533116998" class="floating-action whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="שליחת הודעה בוואטסאפ" data-tooltip="וואטסאפ"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt=""></a>
 <button type="button" class="floating-action newsletter-float" onclick="openNewsletterSignup()" aria-label="הרשמה לניוזלטר" data-tooltip="הרשמה לניוזלטר">✉</button>
+<script src="https://elfsightcdn.com/platform.js" async></script>
+<div class="elfsight-app-3ed3bbb6-4b6e-47cf-9a77-75b3a5f60364" data-elfsight-app-lazy></div>
+<span class="elfsight-chat-notice" aria-hidden="true">1</span>
 <button id="accessibilityToggle" class="accessibility-toggle" type="button" aria-label="פתיחת כלי נגישות" aria-expanded="false" aria-controls="accessibilityPanel" data-tooltip="נגישות"><svg class="accessibility-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"></circle><path d="M12 8v5m0-3l-5 2m5-2l5 2m-5 1l-3 7m3-7l3 7"></path></svg></button>
 <aside id="accessibilityPanel" class="accessibility-panel" aria-label="כלי נגישות" aria-hidden="true">
     <button type="button" class="accessibility-close" onclick="toggleAccessibilityPanel()" aria-label="סגירת כלי הנגישות">&times;</button>
