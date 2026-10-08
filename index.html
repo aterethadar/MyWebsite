@@ -1810,6 +1810,7 @@
     const NEWSLETTER_COUPON_APPLIED_KEY_PREFIX = 'etrat_hadar_newsletter_coupon_applied_';
     const CART_VERSION_KEY = 'etrat_hadar_cart_version';
     const CART_VERSION = '1';
+    const ACTIVE_NEDARIM_PAYMENT_KEY = 'etrat_hadar_active_nedarim_payment';
     const STOCK_NOTICE_STARTED_KEY = 'etrat_hadar_stock_notice_started';
     const STOCK_NOTICE_DURATION_MS = 60 * 24 * 60 * 60 * 1000;
     const EMAIL_AUTH_STATE_KEY = 'etrat_hadar_email_auth_state';
@@ -3050,6 +3051,17 @@
     }
 
     async function submitOrderForPayment() {
+        const status = document.getElementById('checkoutStatus');
+        const checkoutButton = document.querySelector('.checkout-payment-button');
+        const activePayment = localStorage.getItem(ACTIVE_NEDARIM_PAYMENT_KEY);
+        if (activePayment) {
+            if (checkoutButton) {
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = 'ממתינים לאימות תשלום';
+            }
+            if (status) status.textContent = 'יש תשלום קודם שממתין לאימות. אל תבצעו חיוב נוסף; פנו אלינו לבדיקת ההזמנה.';
+            return;
+        }
         if (checkoutOrderRequestPending) return;
         const name = document.getElementById('checkoutName')?.value.trim();
         const email = document.getElementById('checkoutEmail')?.value.trim().toLowerCase();
@@ -3057,7 +3069,6 @@
         const address = document.getElementById('checkoutAddress')?.value.trim() || '';
         const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked')?.value || 'pickup';
         const deliveryNotes = document.getElementById('deliveryNotes')?.value.trim() || '';
-        const status = document.getElementById('checkoutStatus');
         const items = getSelectedCartItems();
         const subtotal = items.reduce((sum, item) => sum + getCheckoutItemTotal(item), 0);
         const discountState = getCheckoutDiscountState(subtotal);
@@ -3074,7 +3085,6 @@
             return;
         }
         checkoutOrderRequestPending = true;
-        const checkoutButton = document.querySelector('.checkout-payment-button');
         if (checkoutButton) {
             checkoutButton.disabled = true;
             checkoutButton.textContent = 'שולחים הזמנה...';
@@ -3197,6 +3207,11 @@
         try {
             const config = JSON.parse(paymentFrame.dataset.paymentConfig);
             paymentFrame.dataset.chargeInitiated = 'true';
+            localStorage.setItem(ACTIVE_NEDARIM_PAYMENT_KEY, JSON.stringify({
+                orderId: paymentFrame.dataset.orderId,
+                amount: config.value?.Amount || '',
+                startedAt: Date.now()
+            }));
             setNedarimPaymentButton('מעבדים תשלום...', true);
             const closeButton = document.querySelector('.nedarim-payment-close');
             if (closeButton) closeButton.disabled = true;
@@ -3208,6 +3223,7 @@
         } catch (error) {
             paymentFrame.dataset.paymentSubmitting = 'false';
             paymentFrame.dataset.chargeInitiated = 'false';
+            localStorage.removeItem(ACTIVE_NEDARIM_PAYMENT_KEY);
             const closeButton = document.querySelector('.nedarim-payment-close');
             if (closeButton) closeButton.disabled = false;
             resetNedarimPaymentButton();
@@ -3260,6 +3276,22 @@
         const verificationAttempt = Number(eventData?._verificationAttempt) || 0;
         const isVerificationRetry = eventData?._verificationRetry === true;
 
+        if (providerStatus === 'ERROR') {
+            if (paymentFrame) {
+                paymentFrame.dataset.paymentSubmitting = 'false';
+                paymentFrame.dataset.chargeInitiated = 'false';
+                paymentFrame.dataset.verificationInProgress = 'false';
+                paymentFrame.dataset.pendingTransactionId = '';
+                paymentFrame.dataset.paymentComplete = 'false';
+            }
+            localStorage.removeItem(ACTIVE_NEDARIM_PAYMENT_KEY);
+            const closeButton = document.querySelector('.nedarim-payment-close');
+            if (closeButton) closeButton.disabled = false;
+            resetNedarimPaymentButton();
+            if (status) status.textContent = `התשלום לא אושר: ${rawValue.Message || rawValue.message || 'בדקו את הפרטים ונסו שוב.'}`;
+            return;
+        }
+
         if (!orderId || !transactionId) {
             if (paymentFrame) {
                 paymentFrame.dataset.paymentSubmitting = 'true';
@@ -3276,22 +3308,9 @@
             if (paymentFrame) {
                 paymentFrame.dataset.paymentSubmitting = providerStatus === 'ERROR' ? 'false' : 'true';
                 paymentFrame.dataset.verificationInProgress = 'false';
-                if (providerStatus === 'ERROR') {
-                    paymentFrame.dataset.chargeInitiated = 'false';
-                    paymentFrame.dataset.pendingTransactionId = '';
-                    paymentFrame.dataset.paymentComplete = 'false';
-                }
             }
-            if (providerStatus === 'ERROR') {
-                const closeButton = document.querySelector('.nedarim-payment-close');
-                if (closeButton) closeButton.disabled = false;
-                resetNedarimPaymentButton();
-            } else {
-                setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
-            }
-            if (status) status.textContent = providerStatus === 'ERROR'
-                ? `התשלום לא אושר: ${rawValue.Message || rawValue.message || 'בדקו את הפרטים ונסו שוב.'}`
-                : 'נדרים פלוס עדיין לא החזירה אישור סופי. אל תנסו לשלם שוב.';
+            setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
+            if (status) status.textContent = 'נדרים פלוס עדיין לא החזירה אישור סופי. אל תנסו לשלם שוב.';
             return;
         }
 
@@ -3323,6 +3342,7 @@
                 paymentFrame.dataset.verificationInProgress = 'false';
                 paymentFrame.dataset.pendingTransactionId = '';
             }
+            localStorage.removeItem(ACTIVE_NEDARIM_PAYMENT_KEY);
             const paidItemKeys = new Set(getSelectedCartItems().map(getCartItemKey));
             cart = cart.filter(item => !paidItemKeys.has(getCartItemKey(item)));
             paidItemKeys.forEach(key => selectedCartItems.delete(key));
@@ -3412,6 +3432,7 @@
                     paymentFrame.dataset.paymentSubmitting = 'false';
                     paymentFrame.dataset.chargeInitiated = 'false';
                 }
+                localStorage.removeItem(ACTIVE_NEDARIM_PAYMENT_KEY);
                 resetNedarimPaymentButton();
             } else {
                 setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
