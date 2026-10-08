@@ -1788,6 +1788,30 @@
 </script>
 <script src="https://elfsightcdn.com/platform.js" async></script>
 <div class="elfsight-app-3ed3bbb6-4b6e-47cf-9a77-75b3a5f60364"></div>
+<script>
+(() => {
+    const observedRoots = new WeakSet();
+    const scanRoot = root => {
+        if (root.querySelector?.('.es-floating-button-container') && !root.querySelector('style[data-ateret-chat-launcher-scale]')) {
+            const style = document.createElement('style');
+            style.dataset.ateretChatLauncherScale = '';
+            style.textContent = '.es-floating-button-container { transform: scale(1.08) !important; transform-origin: bottom left !important; }';
+            root.appendChild(style);
+        }
+        root.querySelectorAll?.('*').forEach(element => {
+            if (element.shadowRoot) observeRoot(element.shadowRoot);
+        });
+    };
+    const observeRoot = root => {
+        if (observedRoots.has(root)) return;
+        observedRoots.add(root);
+        scanRoot(root);
+        new MutationObserver(() => scanRoot(root)).observe(root, { childList: true, subtree: true });
+    };
+    new MutationObserver(() => scanRoot(document)).observe(document.documentElement, { childList: true, subtree: true });
+    scanRoot(document);
+})();
+</script>
 <button id="accessibilityToggle" class="accessibility-toggle" type="button" aria-label="פתיחת כלי נגישות" aria-expanded="false" aria-controls="accessibilityPanel" data-tooltip="נגישות"><svg class="accessibility-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"></circle><path d="M12 8v5m0-3l-5 2m5-2l5 2m-5 1l-3 7m3-7l3 7"></path></svg></button>
 <aside id="accessibilityPanel" class="accessibility-panel" aria-label="כלי נגישות" aria-hidden="true">
     <button type="button" class="accessibility-close" onclick="toggleAccessibilityPanel()" aria-label="סגירת כלי הנגישות">&times;</button>
