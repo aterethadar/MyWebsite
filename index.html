@@ -474,6 +474,10 @@
         .checkout-address input { display: block; width: 100%; min-height: 44px; margin-top: 5px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font: inherit; }
         .checkout-status { color: #8b2e2e; font-weight: 700; }
         .checkout-payment-button[disabled] { opacity: 0.6; cursor: not-allowed; }
+        .payment-result { max-width: 680px; margin: 8vh auto; padding: 36px 28px; border: 1px solid var(--border); border-top: 4px solid var(--olive); border-radius: 12px; background: linear-gradient(145deg, var(--panel), var(--olive-pale)); box-shadow: 0 10px 28px var(--shadow); }
+        .payment-result h2 { display: block; margin: 0 auto 18px; border: 0; color: var(--olive); }
+        .payment-result-order { margin: 18px auto; color: var(--text); font-weight: 700; }
+        .payment-result .btn-send { display: block; max-width: 320px; margin: 22px auto 0; }
         #nedarimPaymentBox[hidden] { display: none; }
         #nedarimPaymentBox { position: fixed; inset: 0; z-index: 2200; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(24, 18, 10, 0.72); }
         .nedarim-payment-dialog { position: relative; width: min(720px, 100%); max-height: min(760px, calc(100vh - 32px)); overflow: auto; padding: 24px; border: 1px solid var(--border); border-radius: 12px; background: #fffdf8; box-shadow: 0 18px 50px rgba(20, 12, 4, 0.3); }
@@ -1572,6 +1576,16 @@
             <button type="button" class="btn-send checkout-payment-button" onclick="submitOrderForPayment()">לתשלום</button>
         </div>
     </div>
+</div>
+
+<div id="payment-result" class="page">
+    <section class="payment-result" aria-labelledby="paymentResultTitle">
+        <h2 id="paymentResultTitle">התשלום התקבל בהצלחה</h2>
+        <p>תודה על הקנייה בעטרת הדר. ההזמנה נקלטה.</p>
+        <p class="payment-result-order">מספר ההזמנה: <strong id="paymentSuccessOrderId"></strong></p>
+        <p>ניצור קשר לגבי האיסוף או המשלוח.</p>
+        <button type="button" class="btn-send" onclick="showPage('shop')">חזרה לחנות</button>
+    </section>
 </div>
 
 <div id="productOptionsPopup" class="popup-overlay" onclick="if(event.target===this) closeProductOptionsPopup()">
@@ -3099,6 +3113,8 @@
                     paymentFrame.dataset.paymentComplete = 'false';
                     paymentFrame.dataset.awaitingCardValidation = 'false';
                     paymentFrame.dataset.pendingTransactionId = '';
+                    const paymentCloseButton = document.querySelector('.nedarim-payment-close');
+                    if (paymentCloseButton) paymentCloseButton.disabled = false;
                     paymentFrame.onload = () => { paymentFrame.dataset.loaded = 'true'; };
                     paymentBox.hidden = false;
                     resetNedarimPaymentButton();
@@ -3126,9 +3142,10 @@
     function closeNedarimPayment() {
         const paymentBox = document.getElementById('nedarimPaymentBox');
         const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        if (paymentFrame?.dataset.paymentSubmitting === 'true' && paymentFrame.dataset.chargeInitiated === 'true') return;
         if (paymentBox) paymentBox.hidden = true;
         if (paymentFrame) paymentFrame.src = 'about:blank';
-        if (paymentFrame?.dataset.paymentComplete !== 'true') {
+        if (paymentFrame?.dataset.paymentComplete !== 'true' && paymentFrame?.dataset.chargeInitiated !== 'true') {
             checkoutOrderRequestPending = false;
             const checkoutButton = document.querySelector('.checkout-payment-button');
             if (checkoutButton) {
@@ -3159,7 +3176,7 @@
         }
         if (paymentFrame.dataset.paymentComplete === 'true' || paymentFrame.dataset.paymentSubmitting === 'true' || paymentFrame.dataset.chargeInitiated === 'true') return;
         if (paymentFrame.dataset.pendingTransactionId) {
-            retryNedarimPaymentVerification();
+            if (status) status.textContent = 'התקבל מזהה עסקה ואנחנו ממתינים לאימות. אל תנסו לשלם שוב.';
             return;
         }
         if (paymentFrame.dataset.loaded !== 'true') {
@@ -3181,6 +3198,8 @@
             const config = JSON.parse(paymentFrame.dataset.paymentConfig);
             paymentFrame.dataset.chargeInitiated = 'true';
             setNedarimPaymentButton('מעבדים תשלום...', true);
+            const closeButton = document.querySelector('.nedarim-payment-close');
+            if (closeButton) closeButton.disabled = true;
             paymentFrame.contentWindow.postMessage({
                 Name: 'FinishTransaction2',
                 Value: config.value
@@ -3188,6 +3207,9 @@
             if (status) status.textContent = 'מעבדים את התשלום המאובטח...';
         } catch (error) {
             paymentFrame.dataset.paymentSubmitting = 'false';
+            paymentFrame.dataset.chargeInitiated = 'false';
+            const closeButton = document.querySelector('.nedarim-payment-close');
+            if (closeButton) closeButton.disabled = false;
             resetNedarimPaymentButton();
             if (status) status.textContent = 'לא ניתן להפעיל את התשלום. נסו שוב.';
         }
@@ -3227,6 +3249,7 @@
     async function finalizeNedarimPayment(eventData) {
         const status = document.getElementById('checkoutStatus');
         const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        if (paymentFrame?.dataset.paymentComplete === 'true') return;
         const frameOrderId = paymentFrame?.dataset.orderId || '';
         const rawValue = eventData?.Value && typeof eventData.Value === 'object' ? eventData.Value : eventData || {};
         const orderId = eventData?.OrderId || eventData?.orderId || rawValue.OrderId || rawValue.orderId || frameOrderId;
@@ -3234,30 +3257,55 @@
         const confirmationNum = rawValue.ConfirmationNum || rawValue.ConfirmationNumber || rawValue.confirmationNum || '';
         const mosadId = rawValue.MosadId || rawValue.mosadId || eventData?.MosadId || eventData?.mosadId || '7019114';
         const providerStatus = String(rawValue.Status || rawValue.status || eventData?.Status || eventData?.status || '').toUpperCase();
+        const verificationAttempt = Number(eventData?._verificationAttempt) || 0;
+        const isVerificationRetry = eventData?._verificationRetry === true;
 
         if (!orderId || !transactionId) {
-            if (paymentFrame) paymentFrame.dataset.paymentSubmitting = 'true';
+            if (paymentFrame) {
+                paymentFrame.dataset.paymentSubmitting = 'true';
+                paymentFrame.dataset.chargeInitiated = 'true';
+            }
             setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
-            if (status) status.textContent = 'לא התקבל מזהה עסקה. כדי למנוע חיוב כפול, אל תלחצו שוב; פנו לשירות אם ההודעה נמשכת.';
+            const closeButton = document.querySelector('.nedarim-payment-close');
+            if (closeButton) closeButton.disabled = true;
+            if (status) status.textContent = 'לא התקבל אישור עסקה מלא. אל תנסו לשלם שוב; פנו אלינו לבדיקת העסקה.';
             return;
         }
 
         if (providerStatus !== 'OK') {
             if (paymentFrame) {
                 paymentFrame.dataset.paymentSubmitting = providerStatus === 'ERROR' ? 'false' : 'true';
-                if (providerStatus === 'ERROR') paymentFrame.dataset.chargeInitiated = 'false';
+                paymentFrame.dataset.verificationInProgress = 'false';
+                if (providerStatus === 'ERROR') {
+                    paymentFrame.dataset.chargeInitiated = 'false';
+                    paymentFrame.dataset.pendingTransactionId = '';
+                    paymentFrame.dataset.paymentComplete = 'false';
+                }
             }
-            if (providerStatus === 'ERROR') resetNedarimPaymentButton();
-            else setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
+            if (providerStatus === 'ERROR') {
+                const closeButton = document.querySelector('.nedarim-payment-close');
+                if (closeButton) closeButton.disabled = false;
+                resetNedarimPaymentButton();
+            } else {
+                setNedarimPaymentButton('ממתינים לאישור Nedarim...', true);
+            }
             if (status) status.textContent = providerStatus === 'ERROR'
                 ? `התשלום לא אושר: ${rawValue.Message || rawValue.message || 'בדקו את הפרטים ונסו שוב.'}`
-                : 'נדרים פלוס עדיין לא החזירה אישור סופי. לא מתבצע חיוב נוסף.';
+                : 'נדרים פלוס עדיין לא החזירה אישור סופי. אל תנסו לשלם שוב.';
             return;
         }
 
+        if (paymentFrame?.dataset.verificationInProgress === 'true' && !isVerificationRetry) return;
         if (paymentFrame) paymentFrame.dataset.pendingTransactionId = transactionId;
+        if (paymentFrame) {
+            paymentFrame.dataset.paymentSubmitting = 'false';
+            paymentFrame.dataset.chargeInitiated = 'true';
+            paymentFrame.dataset.verificationInProgress = 'true';
+        }
         setNedarimPaymentButton('מאמתים תשלום...', true);
         if (status) status.textContent = 'מאמתים את אישור התשלום...';
+        closeNedarimPayment();
+
         const paymentConfig = JSON.parse(paymentFrame?.dataset.paymentConfig || '{}');
         const callbackResult = await submitNedarimCallback(orderId, {
             Status: providerStatus,
@@ -3266,47 +3314,52 @@
             MosadId: mosadId,
             ConfirmationNum: confirmationNum
         });
-        if (!callbackResult || !callbackResult.response || !callbackResult.response.ok) {
-            if (callbackResult?.result?.error === 'payment-not-approved') {
-                if (paymentFrame) {
-                    paymentFrame.dataset.pendingTransactionId = transactionId;
-                    paymentFrame.dataset.paymentSubmitting = 'true';
-                }
-                setNedarimPaymentButton('בדיקת אישור תשלום', false, retryNedarimPaymentVerification);
-                if (status) status.textContent = 'התקבל מזהה עסקה, אך האימות לא הושלם. לא מתבצע חיוב נוסף; בדקו שוב את אישור התשלום.';
-                return;
-            }
-            setNedarimPaymentButton('בדיקת אישור תשלום', false, retryNedarimPaymentVerification);
-            if (status) status.textContent = 'ממתינים לאימות העסקה. לחצו על „בדיקת אישור תשלום”; אל תבצעו חיוב נוסף.';
-            return;
-        }
 
-        if (callbackResult.result?.status === 'paid' || callbackResult.result?.status === 'already-paid') {
+        if (callbackResult?.response?.ok && (callbackResult.result?.status === 'paid' || callbackResult.result?.status === 'already-paid')) {
             if (paymentFrame) {
                 paymentFrame.dataset.paymentComplete = 'true';
                 paymentFrame.dataset.paymentSubmitting = 'false';
+                paymentFrame.dataset.chargeInitiated = 'true';
+                paymentFrame.dataset.verificationInProgress = 'false';
                 paymentFrame.dataset.pendingTransactionId = '';
             }
-            if (status) status.textContent = 'התשלום אושר בהצלחה.';
+            const paidItemKeys = new Set(getSelectedCartItems().map(getCartItemKey));
+            cart = cart.filter(item => !paidItemKeys.has(getCartItemKey(item)));
+            paidItemKeys.forEach(key => selectedCartItems.delete(key));
+            saveCart();
+            updateCartCount();
+            renderCart();
+            checkoutOrderRequestPending = false;
+            const successOrderId = document.getElementById('paymentSuccessOrderId');
+            if (successOrderId) successOrderId.textContent = orderId;
+            setNedarimPaymentButton('התשלום התקבל', true);
+            const checkoutButton = document.querySelector('.checkout-payment-button');
+            if (checkoutButton) {
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = 'התשלום התקבל';
+            }
             closeNedarimPayment();
+            showPage('payment-result');
             return;
         }
-        setNedarimPaymentButton('בדיקת אישור תשלום', false, retryNedarimPaymentVerification);
-        if (status) status.textContent = 'האימות עדיין לא הושלם. לחצו על „בדיקת אישור תשלום”; אל תבצעו חיוב נוסף.';
-    }
 
-    function retryNedarimPaymentVerification() {
-        const paymentFrame = document.getElementById('nedarimPaymentFrame');
-        const transactionId = paymentFrame?.dataset.pendingTransactionId || '';
-        if (!paymentFrame || !transactionId || paymentFrame.dataset.paymentComplete === 'true') return;
-        const config = JSON.parse(paymentFrame.dataset.paymentConfig || '{}');
-        finalizeNedarimPayment({
-            OrderId: paymentFrame.dataset.orderId,
-            TransactionId: transactionId,
-            MosadId: config.value?.Mosad || '7019114',
-            Status: 'OK',
-            Amount: config.value?.Amount || ''
-        });
+        const callbackError = callbackResult?.result?.error || '';
+        const canRetry = !callbackResult || callbackResult.response?.status >= 500;
+        if (canRetry && verificationAttempt < 2) {
+            if (status) status.textContent = 'בודקים את אישור העסקה...';
+            setTimeout(() => finalizeNedarimPayment({
+                ...eventData,
+                _verificationRetry: true,
+                _verificationAttempt: verificationAttempt + 1
+            }), 1200);
+            return;
+        }
+
+        if (paymentFrame) paymentFrame.dataset.verificationInProgress = 'false';
+        setNedarimPaymentButton('לא ניתן לאמת את התשלום', true);
+        if (status) status.textContent = callbackError === 'payment-not-approved'
+            ? 'התקבלה תשובה לא תואמת לאישור נדרים פלוס. אל תנסו לשלם שוב; פנו אלינו לבדיקת העסקה.'
+            : `לא הצלחנו לאמת את התשלום${orderId ? ` ${orderId}` : ''}. אל תנסו לשלם שוב; פנו אלינו לבדיקת העסקה.`;
     }
 
     window.addEventListener('message', async event => {
@@ -3347,7 +3400,10 @@
                 await finalizeNedarimPayment({
                     Value: response,
                     OrderId: document.getElementById('nedarimPaymentFrame')?.dataset.orderId || '',
-                    TransactionId: transactionId
+                    TransactionId: transactionId,
+                    Status: response.Status || response.status || event.data.Status || event.data.status || '',
+                    Amount: response.Amount || event.data.Amount || '',
+                    MosadId: response.MosadId || event.data.MosadId || event.data.mosadId || ''
                 });
                 return;
             }
@@ -3410,6 +3466,19 @@
         if (cart.length === 0) {
             showToast('סל הקניות ריק. הוסיפו מוצר כדי להמשיך לתשלום.');
             return;
+        }
+        const paymentFrame = document.getElementById('nedarimPaymentFrame');
+        if (paymentFrame?.dataset.paymentComplete === 'true') {
+            paymentFrame.dataset.paymentComplete = 'false';
+            paymentFrame.dataset.paymentSubmitting = 'false';
+            paymentFrame.dataset.chargeInitiated = 'false';
+            paymentFrame.dataset.verificationInProgress = 'false';
+            paymentFrame.dataset.pendingTransactionId = '';
+            const paymentButton = document.querySelector('.checkout-payment-button');
+            if (paymentButton) {
+                paymentButton.disabled = false;
+                paymentButton.textContent = 'לתשלום';
+            }
         }
         if (selectedCartItems.size === 0) cart.forEach(item => selectedCartItems.add(getCartItemKey(item)));
         showPage('checkout');
