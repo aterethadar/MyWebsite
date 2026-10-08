@@ -1776,6 +1776,39 @@
 
 <a href="https://wa.me/972533116998" class="floating-action whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="שליחת הודעה בוואטסאפ" data-tooltip="וואטסאפ"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt=""></a>
 <button type="button" class="floating-action newsletter-float" onclick="openNewsletterSignup()" aria-label="הרשמה לניוזלטר" data-tooltip="הרשמה לניוזלטר">✉</button>
+<script>
+(() => {
+    const chatbotAssetUrl = 'https://universe-static.elfsightcdn.com/app-releases/ai-chatbot/stable/v1.37.1/c15bfa266f6449e5810b53e2489d777188961ff6/widget/aiChatbot.js';
+    const publishedIntegrity = 'sha384-XS7oVPw8mXLQoDImBDvpXPDUjDTW03Lo7pXusSnV/kRkZOMjFF8cxupHchWZGdxT';
+    const assetIntegrity = 'sha384-beZ3kBoUfzlPWFHRnY4uNyy85qzU+gusCru8sAGJd8Nx3xqGICPmeW3A9DeyD5D0';
+    const originalAppendChild = Node.prototype.appendChild;
+    const originalInsertBefore = Node.prototype.insertBefore;
+    const patchIntegrity = node => {
+        if (node instanceof HTMLScriptElement && node.src === chatbotAssetUrl && node.integrity === publishedIntegrity) {
+            node.integrity = assetIntegrity;
+            return true;
+        }
+        return false;
+    };
+    const restoreDomMethods = () => {
+        Node.prototype.appendChild = originalAppendChild;
+        Node.prototype.insertBefore = originalInsertBefore;
+    };
+
+    Node.prototype.appendChild = function (node) {
+        const patched = patchIntegrity(node);
+        const result = originalAppendChild.call(this, node);
+        if (patched) restoreDomMethods();
+        return result;
+    };
+    Node.prototype.insertBefore = function (node, reference) {
+        const patched = patchIntegrity(node);
+        const result = originalInsertBefore.call(this, node, reference);
+        if (patched) restoreDomMethods();
+        return result;
+    };
+})();
+</script>
 <script src="https://elfsightcdn.com/platform.js" async></script>
 <div class="elfsight-app-3ed3bbb6-4b6e-47cf-9a77-75b3a5f60364"></div>
 <span class="elfsight-chat-notice" aria-hidden="true">1</span>
