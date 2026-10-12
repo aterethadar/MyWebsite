@@ -5,7 +5,7 @@
     <meta name="google-site-verification" content="cjVrdvpO98K1ZULYd8BiPNC0oLM7IKVpVikPZZrZ9tQ" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="עטרת הדר מציעה תשמישי קדושה ויודאיקה: נרתיק לולב, נרתיק אתרוג, נרתיק דמוי עור, שמן פראפין וכוסיות לשבת ולחג.">
+    <meta name="description" content="עטרת הדר – עטרת של יוקרה, חותם של הדר. תשמישי קדושה ויודאיקה: נרתיקי לולב ואתרוג, שמן פראפין וכוסיות לשבת ולחג.">
     <meta name="keywords" content="עטרת הדר, נרתיק לולב, נרתיק ללולב, נרתיק אתרוג, נרתיק לאתרוג, נרתיק דמוי עור, שמן פראפין, שמן פרפין, תשמישי קדושה, יודאיקה, מוצרים לשבת ולחג">
     <meta name="author" content="עטרת הדר">
     <meta name="theme-color" content="#17120d">
@@ -14,14 +14,14 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="he_IL">
     <meta property="og:site_name" content="עטרת הדר">
-    <meta property="og:title" content="עטרת הדר | תשמישי קדושה, יודאיקה ונרתיקים ללולב ולאתרוג">
-    <meta property="og:description" content="נרתיק לולב, נרתיק אתרוג, נרתיק דמוי עור, שמן פראפין ותשמישי קדושה לשבת ולחג.">
+    <meta property="og:title" content="עטרת הדר | עטרת של יוקרה, חותם של הדר">
+    <meta property="og:description" content="עטרת של יוקרה, חותם של הדר. תשמישי קדושה, יודאיקה, נרתיקים ללולב ולאתרוג ומוצרים לשבת ולחג.">
     <meta property="og:url" content="https://aterethadar.vercel.app/">
     <meta property="og:image" content="https://aterethadar.vercel.app/logo.png">
     <meta property="og:image:alt" content="לוגו עטרת הדר">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="עטרת הדר | תשמישי קדושה, יודאיקה ונרתיקים ללולב ולאתרוג">
-    <meta name="twitter:description" content="נרתיק לולב, נרתיק אתרוג, נרתיק דמוי עור, שמן פראפין ותשמישי קדושה לשבת ולחג.">
+    <meta name="twitter:title" content="עטרת הדר | עטרת של יוקרה, חותם של הדר">
+    <meta name="twitter:description" content="עטרת של יוקרה, חותם של הדר. תשמישי קדושה, יודאיקה, נרתיקים ללולב ולאתרוג ומוצרים לשבת ולחג.">
     <meta name="twitter:image" content="https://aterethadar.vercel.app/logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -29,7 +29,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>עטרת הדר | תשמישי קדושה, יודאיקה ונרתיקים ללולב ולאתרוג</title>
+    <title>עטרת הדר | עטרת של יוקרה, חותם של הדר</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/build/email.min.js"></script>
     <style>
@@ -1758,14 +1758,13 @@
 <button type="button" class="floating-action newsletter-float" onclick="openNewsletterSignup()" aria-label="הרשמה לניוזלטר" data-tooltip="הרשמה לניוזלטר">✉</button>
 <script>
 (() => {
-    const chatbotAssetUrl = 'https://universe-static.elfsightcdn.com/app-releases/ai-chatbot/stable/v1.38.0/0d3ca6f824d90e50673c6edb8c304998148321b2/widget/aiChatbot.js';
-    const publishedIntegrity = 'sha384-/ayomq9Lh63FROh+EgwS7/F4UXBF7xD+6mTu8Mao1J7WHo/AGI1wQ25qhQgilA6A';
-    const assetIntegrity = 'sha384-mAAhvoF0WtiLDbDt0Q4qlc9F51WnI8eGxWULevY8bC4GajydGq/Qr0BMgAhm7i9l';
     const originalAppendChild = Node.prototype.appendChild;
     const originalInsertBefore = Node.prototype.insertBefore;
-    const patchIntegrity = node => {
-        if (!(node instanceof HTMLScriptElement) || !node.src.includes('/app-releases/ai-chatbot/') || !node.src.endsWith('/widget/aiChatbot.js')) return false;
-        if (node.src === chatbotAssetUrl && node.integrity === publishedIntegrity) node.integrity = assetIntegrity;
+    const prepareChatbotScript = node => {
+        if (!(node instanceof HTMLScriptElement) || !node.src.endsWith('/widget/aiChatbot.js')) return false;
+        const url = new URL(node.src);
+        if (url.origin !== 'https://universe-static.elfsightcdn.com' || !url.pathname.includes('/app-releases/ai-chatbot/')) return false;
+        node.removeAttribute('integrity');
         return true;
     };
     const restoreDomMethods = () => {
@@ -1774,15 +1773,15 @@
     };
 
     Node.prototype.appendChild = function (node) {
-        const patched = patchIntegrity(node);
+        const isChatbotScript = prepareChatbotScript(node);
         const result = originalAppendChild.call(this, node);
-        if (patched) restoreDomMethods();
+        if (isChatbotScript) restoreDomMethods();
         return result;
     };
     Node.prototype.insertBefore = function (node, reference) {
-        const patched = patchIntegrity(node);
+        const isChatbotScript = prepareChatbotScript(node);
         const result = originalInsertBefore.call(this, node, reference);
-        if (patched) restoreDomMethods();
+        if (isChatbotScript) restoreDomMethods();
         return result;
     };
 })();
@@ -2380,7 +2379,15 @@
     async function submitNewsletterSignup() {
         const status = document.getElementById('newsletterSubmitStatus');
         const setStatus = message => { if (status) status.textContent = message; };
-        const firstName = document.getElementById('newsletterFirstName').value.trim();
+        const firstNameInput = document.getElementById('newsletterFirstName');
+        const newsletterEmailInput = document.getElementById('newsletterEmail');
+        const newsletterSubmitButton = document.querySelector('#firstOrderDiscountPopup .newsletter-submit');
+        if (!firstNameInput || !newsletterEmailInput || !newsletterSubmitButton) {
+            setStatus('טופס ההרשמה אינו זמין כרגע. יש לנסות שוב בעוד רגע.');
+            return;
+        }
+        if (newsletterSubmitButton.disabled) return;
+        const firstName = firstNameInput.value.trim();
 
         const embeddedForm = document.getElementById('346116');
         const embeddedFields = Array.from(embeddedForm?.querySelectorAll('input') || []);
@@ -2391,7 +2398,7 @@
 
         const nameField = embeddedForm.querySelector('input[name="1"]');
         const emailField = embeddedForm.querySelector('input[name="email"]');
-        const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
+        const email = newsletterEmailInput.value.trim().toLowerCase();
         if (!firstName || !email) {
             setStatus('נא למלא שם וכתובת אימייל.');
             return;
@@ -2400,20 +2407,50 @@
             setStatus('נא להזין כתובת אימייל תקינה.');
             return;
         }
+        if (!nameField || !emailField) {
+            setStatus('טופס ההרשמה לניוזלטר לא הוגדר כראוי. יש לנסות שוב מאוחר יותר.');
+            return;
+        }
         if (nameField) nameField.value = firstName;
         if (emailField) emailField.value = email;
 
-        const submitButton = embeddedForm.querySelector('button[type="submit"], input[type="submit"]');
-        if (!submitButton) {
+        const sendmsgSubmitButton = embeddedForm.querySelector('button[type="submit"], input[type="submit"]');
+        if (!sendmsgSubmitButton) {
             setStatus('לא נמצא כפתור שליחה בטופס ההרשמה.');
             return;
         }
 
-        embeddedForm.requestSubmit(submitButton);
-        localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
-        localStorage.setItem(NEWSLETTER_DISCOUNT_CODE_KEY, NEWSLETTER_COUPON_CODE);
-        setStatus('בקשת ההרשמה נשלחה לניוזלטר. קוד ההטבה יישלח למייל; אם לא הגיע, בדקו גם בספאם.');
-        setTimeout(closeFirstOrderDiscountPopup, 1800);
+        newsletterSubmitButton.disabled = true;
+        setStatus('שולחים את ההרשמה ואת קוד ההטבה למייל…');
+        let sendmsgSubmitted = false;
+        try {
+            embeddedForm.requestSubmit(sendmsgSubmitButton);
+            sendmsgSubmitted = true;
+            const response = await fetch('/api/newsletter/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name: firstName, email })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok || typeof result.couponCode !== 'string' || !result.couponCode.trim()) {
+                throw new Error('newsletter-coupon-send-failed');
+            }
+
+            localStorage.setItem(NEWSLETTER_DISCOUNT_EMAIL_KEY, email);
+            localStorage.setItem(NEWSLETTER_DISCOUNT_CODE_KEY, result.couponCode.trim());
+            setStatus(`נרשמתם בהצלחה! קוד ההטבה ${result.couponCode.trim()} נשלח למייל. כדאי לבדוק גם בתיקיית הספאם.`);
+            setTimeout(closeFirstOrderDiscountPopup, 3500);
+        } catch (error) {
+            console.error('newsletter-signup-failed', error);
+            setStatus(sendmsgSubmitted
+                ? 'ההרשמה נשלחה, אך לא הצלחנו לשלוח את קוד ההטבה למייל. נסו שוב מאוחר יותר או פנו אלינו.'
+                : 'לא הצלחנו לשלוח את ההרשמה. בדקו את הפרטים ונסו שוב.');
+        } finally {
+            newsletterSubmitButton.disabled = false;
+        }
     }
 
     function triggerGoogleSignIn() {
